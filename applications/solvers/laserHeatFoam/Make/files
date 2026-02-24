@@ -1,0 +1,3 @@
+laserHeatFoam.C
+
+EXE = $(FOAM_APPBIN)/laserHeatFoam

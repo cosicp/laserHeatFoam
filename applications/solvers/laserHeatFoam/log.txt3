@@ -1,0 +1,131 @@
+Making dependencies: laserHeatFoam.C
+wmkdepend: parse error while scanning 'createFields.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'updateLaser.H' ... perhaps missing a final newline
+clang++ -std=c++17 -m64 -pthread -ftrapping-math -DOPENFOAM=2506 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-undefined-var-template -Wno-unknown-warning-option -O3  -DNoRepository -ftemplate-depth-100  -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/meshTools/lnInclude -iquote. -IlnInclude -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OSspecific/POSIX/lnInclude   -fPIC -c laserHeatFoam.C -o Make/darwin64ClangDPInt32Opt/laserHeatFoam.o
+In file included from laserHeatFoam.C:89:
+./updateLaser.H:26:7: error: subscripted value is not an array, pointer, or vector
+   26 |      Q[celli] = (2.0 * A * P) / (M_PI * Foam::sqrt(rb) * d)
+      |      ~^~~~~~
+laserHeatFoam.C:95:64: error: invalid operands to binary expression ('Foam::tmp<Foam::fvMatrix<double>>' and 'scalar' (aka 'double'))
+   95 |                 rho * cp * fvm::ddt(T)  - fvm::laplacian(k, T) == Q
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2187:39: note: candidate function template not viable: no known conversion from 'scalar' (aka 'double') to 'const Foam::zero' for 2nd argument
+ 2187 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+ 2188 | (
+ 2189 |     const tmp<fvMatrix<Type>>& tA,
+ 2190 |     const Foam::zero
+      |     ~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/IOstreamOption.H:424:13: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const IOstreamOption::versionNumber' for 1st argument
+  424 | inline bool operator==
+      |             ^
+  425 | (
+  426 |     const IOstreamOption::versionNumber& a,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/edgeI.H:515:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const edge' for 1st argument
+  515 | inline bool Foam::operator==(const edge& a, const edge& b)
+      |                   ^          ~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/faceI.H:264:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const face' for 1st argument
+  264 | inline bool Foam::operator==(const face& a, const face& b)
+      |                   ^          ~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/cell.H:169:6: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const cell' for 1st argument
+  169 | bool operator==(const cell& a, const cell& b);
+      |      ^          ~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/cellModelI.H:131:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const cellModel' for 1st argument
+  131 | inline bool Foam::operator==
+      |                   ^
+  132 | (
+  133 |     const cellModel& lhs,
+      |     ~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/cellShape.H:61:6: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const cellShape' for 1st argument
+   61 | bool operator==(const cellShape& a, const cellShape& b);
+      |      ^          ~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/objectHit.H:154:13: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const objectHit' for 1st argument
+  154 | inline bool operator==(const objectHit& a, const objectHit& b)
+      |             ^          ~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/boundBox.H:509:13: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const boundBox' for 1st argument
+  509 | inline bool operator==(const boundBox& a, const boundBox& b)
+      |             ^          ~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/vectorTensorTransformI.H:256:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const vectorTensorTransform' for 1st argument
+  256 | inline bool Foam::operator==
+      |                   ^
+  257 | (
+  258 |     const vectorTensorTransform& tr1,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/quaternionI.H:698:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const quaternion' for 1st argument
+  698 | inline bool Foam::operator==(const quaternion& q1, const quaternion& q2)
+      |                   ^          ~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/septernionI.H:176:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const septernion' for 1st argument
+  176 | inline bool Foam::operator==(const septernion& tr1, const septernion& tr2)
+      |                   ^          ~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/treeBoundBoxI.H:387:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const treeBoundBox' for 1st argument
+  387 | inline bool Foam::operator==(const treeBoundBox& a, const treeBoundBox& b)
+      |                   ^          ~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/planeI.H:99:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const plane' for 1st argument
+   99 | inline bool Foam::operator==(const plane& a, const plane& b)
+      |                   ^          ~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/triFaceI.H:517:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const triFace' for 1st argument
+  517 | inline bool Foam::operator==(const triFace& a, const triFace& b)
+      |                   ^          ~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/objectMapI.H:59:19: note: candidate function not viable: no known conversion from 'Foam::tmp<Foam::fvMatrix<double>>' to 'const objectMap' for 1st argument
+   59 | inline bool Foam::operator==(const objectMap& a, const objectMap& b)
+      |                   ^          ~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Instant.H:149:13: note: candidate template ignored: could not match 'Instant' against 'Foam::tmp'
+  149 | inline bool operator==(const Instant<T1>& a, const Instant<T2>& b) noexcept
+      |             ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/IntRange.H:560:23: note: candidate template ignored: could not match 'IntRange' against 'Foam::tmp'
+  560 | inline constexpr bool operator==
+      |                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Pair.H:222:6: note: candidate template ignored: could not match 'Pair' against 'Foam::tmp'
+  222 | bool operator==(const Pair<T>& a, const Pair<T>& b)
+      |      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/PackedListI.H:887:19: note: candidate template ignored: could not match 'PackedList' against 'Foam::tmp'
+  887 | inline bool Foam::operator==
+      |                   ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Tuple2.H:160:13: note: candidate template ignored: could not match 'Tuple2' against 'Foam::tmp'
+  160 | inline bool operator==(const Tuple2<T1,T2>& a, const Tuple2<T1,T2>& b)
+      |             ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/VectorSpaceI.H:782:13: note: candidate template ignored: could not match 'VectorSpace' against 'Foam::tmp'
+  782 | inline bool operator==
+      |             ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2024:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2024 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2035:39: note: candidate template ignored: could not match 'fvMatrix<Type>' against 'scalar' (aka 'double')
+ 2035 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2046:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2046 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2057:39: note: candidate template ignored: could not match 'tmp<fvMatrix<Type>>' against 'scalar' (aka 'double')
+ 2057 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2068:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2068 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2081:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2081 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2095:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2095 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2109:39: note: candidate template ignored: could not match 'DimensionedField<Type, volMesh>' against 'scalar' (aka 'double')
+ 2109 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2122:39: note: candidate template ignored: could not match 'tmp<DimensionedField<Type, volMesh>>' against 'scalar' (aka 'double')
+ 2122 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2136:39: note: candidate template ignored: could not match 'tmp<GeometricField<Type, fvPatchField, volMesh>>' against 'scalar' (aka 'double')
+ 2136 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2150:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2150 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2163:39: note: candidate template ignored: could not match 'dimensioned<Type>' against 'scalar' (aka 'double')
+ 2163 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2176:39: note: candidate template ignored: could not match 'fvMatrix' against 'Foam::tmp'
+ 2176 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
+      |                                       ^
+2 errors generated.
+make: *** [Make/darwin64ClangDPInt32Opt/laserHeatFoam.o] Error 1

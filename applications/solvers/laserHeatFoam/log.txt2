@@ -1,0 +1,1002 @@
+clang++ -std=c++17 -m64 -pthread -ftrapping-math -DOPENFOAM=2506 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-undefined-var-template -Wno-unknown-warning-option -O3  -DNoRepository -ftemplate-depth-100  -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/meshTools/lnInclude -iquote. -IlnInclude -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude -I/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OSspecific/POSIX/lnInclude   -fPIC -c laserHeatFoam.C -o Make/darwin64ClangDPInt32Opt/laserHeatFoam.o
+In file included from laserHeatFoam.C:89:
+./updateLaser.H:26:7: error: subscripted value is not an array, pointer, or vector
+   26 |      Q[celli] = (2.0 * A * P) / (M_PI * Foam::sqrt(rb) * d)
+      |      ~^~~~~~
+laserHeatFoam.C:95:21: error: invalid operands to binary expression ('volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') and 'bool (const fileName &, const fileName &, const bool)')
+   95 |                 rho * cp * fvm::ddt(T)  - fvm::laplacian(k, T) == Q
+      |                 ~~~ ^ ~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/zeroI.H:79:23: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const zero' for 2nd argument
+   79 | inline constexpr zero operator*(const Type& val, const zero&) noexcept
+      |                       ^                          ~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/oneI.H:72:30: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const one' for 2nd argument
+   72 | inline constexpr const Type& operator*(const Type& val, const one&) noexcept
+      |                              ^                          ~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:823:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const UList<scalar>' (aka 'const UList<double>') for 2nd argument
+  823 | BINARY_OPERATOR(Type, Type, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:304:24: note: expanded from macro 'BINARY_OPERATOR'
+  304 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  305 | (                                                                              \
+  306 |     const UList<Type1>& f1,                                                    \
+  307 |     const UList<Type2>& f2                                                     \
+      |     ~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:823:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const tmp<Field<scalar>>' (aka 'const tmp<Field<double>>') for 2nd argument
+  823 | BINARY_OPERATOR(Type, Type, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:316:24: note: expanded from macro 'BINARY_OPERATOR'
+  316 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  317 | (                                                                              \
+  318 |     const UList<Type1>& f1,                                                    \
+  319 |     const tmp<Field<Type2>>& tf2                                               \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:828:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const scalar' (aka 'const double') for 2nd argument
+  828 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:411:24: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  411 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  412 | (                                                                              \
+  413 |     const UList<Type1>& f1,                                                    \
+  414 |     const Type2& s2                                                            \
+      |     ~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:407:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const dimensioned<scalar>' (aka 'const dimensioned<double>') for 2nd argument
+  407 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, '*', multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:629:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  629 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  630 | (                                                                              \
+  631 |     const DimensionedField<Type1, GeoMesh>& f1,                                \
+  632 |     const dimensioned<Type2>& dt2                                              \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:407:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const scalar' (aka 'const double') for 2nd argument
+  407 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, '*', multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:649:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  649 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  650 | (                                                                              \
+  651 |     const DimensionedField<Type1, GeoMesh>& f1,                                \
+  652 |     const Type2& s2                                                            \
+      |     ~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:606:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const dimensioned<scalar>' (aka 'const dimensioned<double>') for 2nd argument
+  606 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, '*', multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:703:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  703 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  704 | (                                                                              \
+  705 |     const GeometricField<Type1, PatchField, GeoMesh>& f1,                      \
+  706 |     const dimensioned<Type2>& dt2                                              \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:606:1: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const scalar' (aka 'const double') for 2nd argument
+  606 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, '*', multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:723:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  723 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  724 | (                                                                              \
+  725 |     const GeometricField<Type1, PatchField, GeoMesh>& f1,                      \
+  726 |     const Type2& s2                                                            \
+      |     ~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/zeroFieldI.H:68:18: note: candidate function template not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const zeroField' for 2nd argument
+   68 | inline zeroField operator*(const Type& t, const zeroField&)
+      |                  ^                        ~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarField.H:94:1: note: candidate function not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const UList<scalar>' (aka 'const UList<double>') for 2nd argument
+   94 | BINARY_OPERATOR(scalar, scalar, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:188:24: note: expanded from macro 'BINARY_OPERATOR'
+  188 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  189 | (                                                                              \
+  190 |     const UList<Type1>& f1,                                                    \
+  191 |     const UList<Type2>& f2                                                     \
+      |     ~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarField.H:94:1: note: candidate function not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const tmp<Field<scalar>>' (aka 'const tmp<Field<double>>') for 2nd argument
+   94 | BINARY_OPERATOR(scalar, scalar, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:195:24: note: expanded from macro 'BINARY_OPERATOR'
+  195 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  196 | (                                                                              \
+  197 |     const UList<Type1>& f1,                                                    \
+  198 |     const tmp<Field<Type2>>& tf2                                               \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarField.H:94:1: note: candidate function not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const UList<scalar>' (aka 'const UList<double>') for 2nd argument
+   94 | BINARY_OPERATOR(scalar, scalar, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:202:24: note: expanded from macro 'BINARY_OPERATOR'
+  202 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  203 | (                                                                              \
+  204 |     const tmp<Field<Type1>>& tf1,                                              \
+  205 |     const UList<Type2>& f2                                                     \
+      |     ~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarField.H:94:1: note: candidate function not viable: no known conversion from 'bool (const fileName &, const fileName &, const bool)' to 'const tmp<Field<scalar>>' (aka 'const tmp<Field<double>>') for 2nd argument
+   94 | BINARY_OPERATOR(scalar, scalar, scalar, *, multiply)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:209:24: note: expanded from macro 'BINARY_OPERATOR'
+  209 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+  210 | (                                                                              \
+  211 |     const tmp<Field<Type1>>& tf1,                                              \
+  212 |     const tmp<Field<Type2>>& tf2                                               \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/zeroI.H:85:23: note: candidate function template not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const zero' for 1st argument
+   85 | inline constexpr zero operator*(const zero&, const Type& val) noexcept
+      |                       ^         ~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/oneI.H:78:30: note: candidate function template not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const one' for 1st argument
+   78 | inline constexpr const Type& operator*(const one&, const Type& val) noexcept
+      |                              ^         ~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/zeroFieldI.H:74:18: note: candidate function template not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const zeroField' for 1st argument
+   74 | inline zeroField operator*(const zeroField&, const Type& t)
+      |                  ^         ~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/zeroI.H:73:23: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const zero' for 1st argument
+   73 | inline constexpr zero operator*(const zero&, const zero&) noexcept
+      |                       ^         ~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/oneI.H:66:29: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const one' for 1st argument
+   66 | inline constexpr const one& operator*(const one& o, const one&) noexcept
+      |                             ^         ~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/complexI.H:328:16: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const complex' for 1st argument
+  328 | inline complex operator*(const complex& c1, const complex& c2)
+      |                ^         ~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/complexI.H:338:16: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const complex' for 1st argument
+  338 | inline complex operator*(const complex& c, const scalar s)
+      |                ^         ~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/complexI.H:344:16: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const scalar' (aka 'const double') for 1st argument
+  344 | inline complex operator*(const scalar s, const complex& c)
+      |                ^         ~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionSet.H:422:14: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const dimensionSet' for 1st argument
+  422 | dimensionSet operator*(const dimensionSet& ds1, const dimensionSet& ds2);
+      |              ^         ~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedScalar.H:58:19: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const dimensionedScalar' (aka 'const dimensioned<double>') for 1st argument
+   58 | dimensionedScalar operator*(const dimensionedScalar&, const scalar);
+      |                   ^         ~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/orientedType.H:216:14: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const scalar' (aka 'const double') for 1st argument
+  216 | orientedType operator*(const scalar s, const orientedType& ot);
+      |              ^         ~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/orientedType.H:222:14: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const orientedType' for 1st argument
+  222 | orientedType operator*(const orientedType& ot1, const orientedType& ot2);
+      |              ^         ~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/quaternionI.H:742:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const quaternion' for 1st argument
+  742 | inline Foam::quaternion Foam::operator*
+      |                               ^
+  743 | (
+  744 |     const quaternion& q1,
+      |     ~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/quaternionI.H:766:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const scalar' (aka 'const double') for 1st argument
+  766 | inline Foam::quaternion Foam::operator*(const scalar s, const quaternion& q)
+      |                               ^         ~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/quaternionI.H:772:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const quaternion' for 1st argument
+  772 | inline Foam::quaternion Foam::operator*(const quaternion& q, const scalar s)
+      |                               ^         ~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/septernionI.H:218:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const quaternion' for 1st argument
+  218 | inline Foam::septernion Foam::operator*
+      |                               ^
+  219 | (
+  220 |     const quaternion& r,
+      |     ~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/septernionI.H:228:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const septernion' for 1st argument
+  228 | inline Foam::septernion Foam::operator*
+      |                               ^
+  229 | (
+  230 |     const septernion& tr,
+      |     ~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/septernionI.H:248:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const septernion' for 1st argument
+  248 | inline Foam::septernion Foam::operator*
+      |                               ^
+  249 | (
+  250 |     const septernion& tr1,
+      |     ~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/septernionI.H:272:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const scalar' (aka 'const double') for 1st argument
+  272 | inline Foam::septernion Foam::operator*(const scalar s, const septernion& tr)
+      |                               ^         ~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/septernionI.H:278:31: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const septernion' for 1st argument
+  278 | inline Foam::septernion Foam::operator*(const septernion& tr, const scalar s)
+      |                               ^         ~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/oneFieldI.H:34:24: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const oneField' for 1st argument
+   34 | inline const oneField& operator*
+      |                        ^
+   35 | (
+   36 |     const oneField& of,
+      |     ~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/geometricOneFieldI.H:34:33: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const geometricOneField' for 1st argument
+   34 | inline const geometricOneField& operator*
+      |                                 ^
+   35 | (
+   36 |     const geometricOneField& of,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/geometricOneFieldI.H:44:43: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const geometricOneField::Internal' (aka 'const Foam::oneField') for 1st argument
+   44 | inline const geometricOneField::Internal& operator*
+      |                                           ^
+   45 | (
+   46 |     const geometricOneField::Internal& of,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/geometricOneFieldI.H:54:43: note: candidate function not viable: no known conversion from 'volScalarField' (aka 'GeometricField<double, fvPatchField, Foam::volMesh>') to 'const geometricOneField' for 1st argument
+   54 | inline const geometricOneField::Internal& operator*
+      |                                           ^
+   55 | (
+   56 |     const geometricOneField& /*ignore*/,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/VectorSpaceI.H:700:13: note: candidate template ignored: could not match 'VectorSpace<Form, Cmpt, Ncmpts>' against 'bool (const fileName &, const fileName &, const bool)'
+  700 | inline Form operator*
+      |             ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/VectorSpaceI.H:713:13: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+  713 | inline Form operator*
+      |             ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/MinMaxOps.H:294:18: note: candidate template ignored: could not match 'MinMax' against 'GeometricField'
+  294 | inline MinMax<T> operator*(const MinMax<T>& x, scalar s)
+      |                  ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/VectorI.H:307:21: note: candidate template ignored: could not match 'Vector<Cmpt>' against 'bool (const fileName &, const fileName &, const bool)'
+  307 | inline Vector<Cmpt> operator*(const Cmpt& s, const Vector<Cmpt>& v)
+      |                     ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/VectorI.H:314:21: note: candidate template ignored: could not match 'Vector' against 'GeometricField'
+  314 | inline Vector<Cmpt> operator*(const Vector<Cmpt>& v, const Cmpt& s)
+      |                     ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/MatrixSpaceI.H:506:62: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+  506 | inline typename typeOfOuterProduct<Cmpt, Form1, Form2>::type operator*
+      |                                                              ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/TensorI.H:1285:1: note: candidate template ignored: could not match 'Vector' against 'GeometricField'
+ 1285 | operator*(const Vector<Cmpt>& v1, const Vector<Cmpt>& v2)
+      | ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/complex:783:1: note: candidate template ignored: could not match 'complex' against 'GeometricField'
+  783 | operator*(const complex<_Tp>& __lhs, const complex<_Tp>& __rhs) {
+      | ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/complex:789:1: note: candidate template ignored: could not match 'complex' against 'GeometricField'
+  789 | operator*(const complex<_Tp>& __z, const complex<_Tp>& __w) {
+      | ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/complex:800:1: note: candidate template ignored: could not match 'complex' against 'GeometricField'
+  800 | operator*(const complex<_Tp>& __x, const _Tp& __y) {
+      | ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/complex:808:1: note: candidate template ignored: could not match 'complex<_Tp>' against 'bool (const fileName &, const fileName &, const bool)'
+  808 | operator*(const _Tp& __x, const complex<_Tp>& __y) {
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:823:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+  823 | BINARY_OPERATOR(Type, Type, scalar, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:329:24: note: expanded from macro 'BINARY_OPERATOR'
+  329 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:823:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:342:24: note: expanded from macro 'BINARY_OPERATOR'
+  342 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:824:1: note: candidate template ignored: could not match 'UList<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+  824 | BINARY_OPERATOR(Type, scalar, Type, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:304:24: note: expanded from macro 'BINARY_OPERATOR'
+  304 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:824:1: note: candidate template ignored: could not match 'tmp<Field<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:316:24: note: expanded from macro 'BINARY_OPERATOR'
+  316 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:824:1: note: candidate template ignored: could not match 'UList<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:329:24: note: expanded from macro 'BINARY_OPERATOR'
+  329 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:824:1: note: candidate template ignored: could not match 'tmp<Field<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:342:24: note: expanded from macro 'BINARY_OPERATOR'
+  342 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:827:1: note: candidate template ignored: could not match 'UList<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+  827 | BINARY_TYPE_OPERATOR_SF(Type, scalar, Type, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:372:24: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  372 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:827:1: note: candidate template ignored: could not match 'tmp<Field<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:384:24: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  384 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:828:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+  828 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.C:423:24: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  423 | tmp<Field<ReturnType>> operator Op                                             \
+      |                        ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'UList<Type2>' against 'bool (const fileName &, const fileName &, const bool)'
+  971 | PRODUCT_OPERATOR(outerProduct, *, outer)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:850:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  850 | tmp<Field<typename product<Type1, Type2>::type>>                               \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'tmp<Field<Type2>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:860:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  860 | tmp<Field<typename product<Type1, Type2>::type>>                               \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:871:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  871 | tmp<Field<typename product<Type1, Type2>::type>>                               \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:882:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  882 | tmp<Field<typename product<Type1, Type2>::type>>                               \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'VectorSpace<Form, Cmpt, nCmpt>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:907:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  907 | tmp<Field<typename product<Type, Form>::type>>                                 \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:917:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  917 | tmp<Field<typename product<Type, Form>::type>>                                 \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:945:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  945 | tmp<Field<typename product<Form, Type>::type>>                                 \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:971:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctions.C:955:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  955 | tmp<Field<typename product<Form, Type>::type>>                                 \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/MatrixI.H:623:25: note: candidate template ignored: could not match 'Matrix' against 'GeometricField'
+  623 | inline tmp<Field<Type>> operator*
+      |                         ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/MatrixI.H:635:25: note: candidate template ignored: could not match 'Matrix' against 'GeometricField'
+  635 | inline tmp<Field<Type>> operator*
+      |                         ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/MatrixI.H:647:25: note: candidate template ignored: could not match 'Matrix<Form, Type>' against 'bool (const fileName &, const fileName &, const bool)'
+  647 | inline tmp<Field<Type>> operator*
+      |                         ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/MatrixI.H:659:25: note: candidate template ignored: could not match 'IndirectListBase' against 'GeometricField'
+  659 | inline tmp<Field<Type>> operator*
+      |                         ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Matrix.C:845:6: note: candidate template ignored: could not match 'Matrix<Form, Type>' against 'bool (const fileName &, const fileName &, const bool)'
+  845 | Form operator*(const Type& s, const Matrix<Form, Type>& mat)
+      |      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Matrix.C:863:6: note: candidate template ignored: could not match 'Matrix' against 'GeometricField'
+  863 | Form operator*(const Matrix<Form, Type>& mat, const Type& s)
+      |      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Matrix.C:952:1: note: candidate template ignored: could not match 'Matrix' against 'GeometricField'
+  952 | operator*
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:864:31: note: candidate template ignored: could not match 'dimensioned<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+  864 | Foam::dimensioned<Type> Foam::operator*
+      |                               ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:946:1: note: candidate template ignored: could not match 'dimensioned' against 'GeometricField'
+  946 | PRODUCT_OPERATOR(outerProduct, *, outer)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:899:7: note: expanded from macro 'PRODUCT_OPERATOR'
+  899 | Foam::operator op                                                              \
+      |       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:946:1: note: candidate template ignored: could not match 'dimensioned' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:915:7: note: expanded from macro 'PRODUCT_OPERATOR'
+  915 | Foam::operator op                                                              \
+      |       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:946:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedType.C:931:7: note: expanded from macro 'PRODUCT_OPERATOR'
+  931 | Foam::operator op                                                              \
+      |       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Vector2DI.H:188:23: note: candidate template ignored: could not match 'Vector2D<Cmpt>' against 'bool (const fileName &, const fileName &, const bool)'
+  188 | inline Vector2D<Cmpt> operator*(const Cmpt& s, const Vector2D<Cmpt>& v)
+      |                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/Vector2DI.H:195:23: note: candidate template ignored: could not match 'Vector2D' against 'GeometricField'
+  195 | inline Vector2D<Cmpt> operator*(const Vector2D<Cmpt>& v, const Cmpt& s)
+      |                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedScalarField.C:91:1: note: candidate template ignored: could not match 'DimensionedField<scalar, GeoMesh>' (aka 'DimensionedField<double, GeoMesh>') against 'bool (const fileName &, const fileName &, const bool)'
+   91 | BINARY_OPERATOR(scalar, scalar, scalar, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:440:44: note: expanded from macro 'BINARY_OPERATOR'
+  440 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedScalarField.C:91:1: note: candidate template ignored: could not match 'tmp<DimensionedField<scalar, GeoMesh>>' (aka 'tmp<DimensionedField<double, GeoMesh>>') against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:460:44: note: expanded from macro 'BINARY_OPERATOR'
+  460 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedScalarField.C:91:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:483:44: note: expanded from macro 'BINARY_OPERATOR'
+  483 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedScalarField.C:91:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:505:44: note: expanded from macro 'BINARY_OPERATOR'
+  505 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:402:1: note: candidate template ignored: could not match 'DimensionedField<scalar, GeoMesh>' (aka 'DimensionedField<double, GeoMesh>') against 'bool (const fileName &, const fileName &, const bool)'
+  402 | BINARY_OPERATOR(Type, Type, scalar, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:440:44: note: expanded from macro 'BINARY_OPERATOR'
+  440 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:402:1: note: candidate template ignored: could not match 'tmp<DimensionedField<scalar, GeoMesh>>' (aka 'tmp<DimensionedField<double, GeoMesh>>') against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:460:44: note: expanded from macro 'BINARY_OPERATOR'
+  460 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:402:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:483:44: note: expanded from macro 'BINARY_OPERATOR'
+  483 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:402:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:505:44: note: expanded from macro 'BINARY_OPERATOR'
+  505 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:403:1: note: candidate template ignored: could not match 'DimensionedField<Type, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+  403 | BINARY_OPERATOR(Type, scalar, Type, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:440:44: note: expanded from macro 'BINARY_OPERATOR'
+  440 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:403:1: note: candidate template ignored: could not match 'tmp<DimensionedField<Type, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:460:44: note: expanded from macro 'BINARY_OPERATOR'
+  460 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:403:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:483:44: note: expanded from macro 'BINARY_OPERATOR'
+  483 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:403:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:505:44: note: expanded from macro 'BINARY_OPERATOR'
+  505 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:406:1: note: candidate template ignored: could not match 'DimensionedField<Type, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+  406 | BINARY_TYPE_OPERATOR_SF(Type, scalar, Type, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:549:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  549 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:406:1: note: candidate template ignored: could not match 'DimensionedField<Type, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:569:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  569 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:406:1: note: candidate template ignored: could not match 'tmp<DimensionedField<Type, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:580:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  580 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:406:1: note: candidate template ignored: could not match 'tmp<DimensionedField<Type, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:603:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  603 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:407:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+  407 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:660:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  660 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:407:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:683:44: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  683 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'DimensionedField<Type2, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+  678 | PRODUCT_OPERATOR(outerProduct, *, outer)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:417:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  417 | tmp<DimensionedField<typename product<Type1, Type2>::type, GeoMesh>>           \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'tmp<DimensionedField<Type2, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:441:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  441 | tmp<DimensionedField<typename product<Type1, Type2>::type, GeoMesh>>           \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:468:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  468 | tmp<DimensionedField<typename product<Type1, Type2>::type, GeoMesh>>           \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:495:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  495 | tmp<DimensionedField<typename product<Type1, Type2>::type, GeoMesh>>           \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'dimensioned<Form>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:526:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  526 | tmp<DimensionedField<typename product<Type, Form>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'VectorSpace<Form, Cmpt, nCmpt>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:550:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  550 | tmp<DimensionedField<typename product<Form, Type>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:562:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  562 | tmp<DimensionedField<typename product<Type, Form>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:589:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  589 | tmp<DimensionedField<typename product<Form, Type>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'dimensioned' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:601:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  601 | tmp<DimensionedField<typename product<Form, Type>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:625:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  625 | tmp<DimensionedField<typename product<Form, Type>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'dimensioned' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:637:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  637 | tmp<DimensionedField<typename product<Form, Type>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:678:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctions.C:664:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  664 | tmp<DimensionedField<typename product<Form, Type>::type, GeoMesh>>             \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarFieldField.C:91:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+   91 | BINARY_OPERATOR(scalar, scalar, scalar, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:311:36: note: expanded from macro 'BINARY_OPERATOR'
+  311 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarFieldField.C:91:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:323:36: note: expanded from macro 'BINARY_OPERATOR'
+  323 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarFieldField.C:91:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:336:36: note: expanded from macro 'BINARY_OPERATOR'
+  336 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/scalarFieldField.C:91:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:349:36: note: expanded from macro 'BINARY_OPERATOR'
+  349 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.H:495:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+  495 | PRODUCT_OPERATOR(outerProduct, *, outer)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.H:367:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  367 | tmp<FieldField<Field1, typename product<Type1, Type2>::type>>                  \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:663:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+  663 | BINARY_OPERATOR(Type, Type, scalar, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:311:36: note: expanded from macro 'BINARY_OPERATOR'
+  311 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:663:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:323:36: note: expanded from macro 'BINARY_OPERATOR'
+  323 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:663:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:336:36: note: expanded from macro 'BINARY_OPERATOR'
+  336 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:663:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:349:36: note: expanded from macro 'BINARY_OPERATOR'
+  349 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:664:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+  664 | BINARY_OPERATOR(Type, scalar, Type, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:311:36: note: expanded from macro 'BINARY_OPERATOR'
+  311 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:664:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:323:36: note: expanded from macro 'BINARY_OPERATOR'
+  323 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:664:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:336:36: note: expanded from macro 'BINARY_OPERATOR'
+  336 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:664:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:349:36: note: expanded from macro 'BINARY_OPERATOR'
+  349 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:667:1: note: candidate template ignored: could not match 'FieldField<Field, Type>' against 'bool (const fileName &, const fileName &, const bool)'
+  667 | BINARY_TYPE_OPERATOR_SF(Type, scalar, Type, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:388:36: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  388 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:667:1: note: candidate template ignored: could not match 'tmp<FieldField<Field, Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:400:36: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  400 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:668:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+  668 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:432:36: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  432 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:668:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:444:36: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  444 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+  937 | PRODUCT_OPERATOR(outerProduct, *, outer)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:706:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  706 | tmp<FieldField<Field1, typename product<Type1, Type2>::type>>                  \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:720:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  720 | tmp<FieldField<Field, typename product<Type1, Type2>::type>>                   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:741:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  741 | tmp<FieldField<Field, typename product<Type1, Type2>::type>>                   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:762:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  762 | tmp<FieldField<Field1, typename product<Type1, Type2>::type>>                  \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:783:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  783 | tmp<FieldField<Field1, typename product<Type1, Type2>::type>>                  \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'FieldField' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:833:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  833 | tmp<FieldField<Field, typename product<Type, Form>::type>>                     \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:854:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  854 | tmp<FieldField<Field, typename product<Type, Form>::type>>                     \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:899:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  899 | tmp<FieldField<Field, typename product<Form, Type>::type>>                     \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:937:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctions.C:920:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  920 | tmp<FieldField<Field, typename product<Form, Type>::type>>                     \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:601:1: note: candidate template ignored: could not match 'GeometricField<scalar, PatchField, GeoMesh>' (aka 'GeometricField<double, PatchField, GeoMesh>') against 'bool (const fileName &, const fileName &, const bool)'
+  601 | BINARY_OPERATOR(Type, Type, scalar, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:502:54: note: expanded from macro 'BINARY_OPERATOR'
+  502 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:601:1: note: candidate template ignored: could not match 'tmp<GeometricField<scalar, PatchField, GeoMesh>>' (aka 'tmp<GeometricField<double, PatchField, GeoMesh>>') against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:522:54: note: expanded from macro 'BINARY_OPERATOR'
+  522 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:601:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:545:54: note: expanded from macro 'BINARY_OPERATOR'
+  545 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:601:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:568:54: note: expanded from macro 'BINARY_OPERATOR'
+  568 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:602:1: note: candidate template ignored: could not match 'GeometricField<Type, PatchField, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+  602 | BINARY_OPERATOR(Type, scalar, Type, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:502:54: note: expanded from macro 'BINARY_OPERATOR'
+  502 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:602:1: note: candidate template ignored: could not match 'tmp<GeometricField<Type, PatchField, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:522:54: note: expanded from macro 'BINARY_OPERATOR'
+  522 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:602:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:545:54: note: expanded from macro 'BINARY_OPERATOR'
+  545 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:602:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:568:54: note: expanded from macro 'BINARY_OPERATOR'
+  568 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:605:1: note: candidate template ignored: could not match 'GeometricField<Type, PatchField, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+  605 | BINARY_TYPE_OPERATOR_SF(Type, scalar, Type, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:617:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  617 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:605:1: note: candidate template ignored: could not match 'GeometricField<Type, PatchField, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:637:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  637 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:605:1: note: candidate template ignored: could not match 'tmp<GeometricField<Type, PatchField, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:648:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  648 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:605:1: note: candidate template ignored: could not match 'tmp<GeometricField<Type, PatchField, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:671:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_SF'
+  671 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:606:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+  606 | BINARY_TYPE_OPERATOR_FS(Type, Type, scalar, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:734:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  734 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:606:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:757:54: note: expanded from macro 'BINARY_TYPE_OPERATOR_FS'
+  757 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'GeometricField<Type2, PatchField, GeoMesh>' against 'bool (const fileName &, const fileName &, const bool)'
+  987 | PRODUCT_OPERATOR(outerProduct, *, outer)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:652:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  652 | >                                                                              \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'tmp<GeometricField<Type2, PatchField, GeoMesh>>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:680:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  680 | >                                                                              \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:710:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  710 | >                                                                              \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:740:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  740 | >                                                                              \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'dimensioned<Form>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:790:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  790 | tmp<GeometricField<typename product<Type, Form>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'VectorSpace<Form, Cmpt, nCmpt>' against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:820:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  820 | tmp<GeometricField<typename product<Form, Type>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:833:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  833 | tmp<GeometricField<typename product<Type, Form>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:866:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  866 | tmp<GeometricField<typename product<Form, Type>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'dimensioned' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:898:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  898 | tmp<GeometricField<typename product<Form, Type>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:928:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  928 | tmp<GeometricField<typename product<Form, Type>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'dimensioned' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:940:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  940 | tmp<GeometricField<typename product<Form, Type>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:987:1: note: candidate template ignored: could not match 'VectorSpace' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctions.C:973:80: note: expanded from macro 'PRODUCT_OPERATOR'
+  973 | tmp<GeometricField<typename product<Form, Type>::type, PatchField, GeoMesh>>   \
+      |                                                                                ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricScalarField.C:106:1: note: candidate template ignored: could not match 'GeometricField<scalar, PatchField, GeoMesh>' (aka 'GeometricField<double, PatchField, GeoMesh>') against 'bool (const fileName &, const fileName &, const bool)'
+  106 | BINARY_OPERATOR(scalar, scalar, scalar, *, '*', multiply)
+      | ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:502:54: note: expanded from macro 'BINARY_OPERATOR'
+  502 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricScalarField.C:106:1: note: candidate template ignored: could not match 'tmp<GeometricField<scalar, PatchField, GeoMesh>>' (aka 'tmp<GeometricField<double, PatchField, GeoMesh>>') against 'bool (const fileName &, const fileName &, const bool)'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:522:54: note: expanded from macro 'BINARY_OPERATOR'
+  522 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricScalarField.C:106:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:545:54: note: expanded from macro 'BINARY_OPERATOR'
+  545 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricScalarField.C:106:1: note: candidate template ignored: could not match 'tmp' against 'GeometricField'
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:568:54: note: expanded from macro 'BINARY_OPERATOR'
+  568 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2770:39: note: candidate template ignored: could not match 'fvMatrix<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2770 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2782:39: note: candidate template ignored: could not match 'fvMatrix<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2782 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2794:39: note: candidate template ignored: could not match 'fvMatrix<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2794 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2806:39: note: candidate template ignored: could not match 'tmp<fvMatrix<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2806 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2818:39: note: candidate template ignored: could not match 'tmp<fvMatrix<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2818 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2830:39: note: candidate template ignored: could not match 'tmp<fvMatrix<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2830 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2842:39: note: candidate template ignored: could not match 'fvMatrix<Type>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2842 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/finiteVolume/lnInclude/fvMatrix.C:2854:39: note: candidate template ignored: could not match 'tmp<fvMatrix<Type>>' against 'bool (const fileName &, const fileName &, const bool)'
+ 2854 | Foam::tmp<Foam::fvMatrix<Type>> Foam::operator*
+      |                                       ^
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/TensorI.H:1050:21: note: candidate function template not viable: requires single argument 't', but 2 arguments were provided
+ 1050 | inline Vector<Cmpt> operator*(const Tensor<Cmpt>& t)
+      |                     ^         ~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/TensorI.H:1058:21: note: candidate function template not viable: requires single argument 'v', but 2 arguments were provided
+ 1058 | inline Tensor<Cmpt> operator*(const Vector<Cmpt>& v)
+      |                     ^         ~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/SymmTensorI.H:721:21: note: candidate function template not viable: requires single argument 'st', but 2 arguments were provided
+  721 | inline Vector<Cmpt> operator*(const SymmTensor<Cmpt>& st)
+      |                     ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/symmTensorField.H:215:1: note: candidate function not viable: requires single argument 'f1', but 2 arguments were provided
+  215 | UNARY_OPERATOR(vector, symmTensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:54:24: note: expanded from macro 'UNARY_OPERATOR'
+   54 | tmp<Field<ReturnType>> operator Op(const UList<Type1>& f1);                    \
+      |                        ^           ~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/symmTensorField.H:215:1: note: candidate function not viable: requires single argument 'tf1', but 2 arguments were provided
+  215 | UNARY_OPERATOR(vector, symmTensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:57:24: note: expanded from macro 'UNARY_OPERATOR'
+   57 | tmp<Field<ReturnType>> operator Op(const tmp<Field<Type1>>& tf1);
+      |                        ^           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorField.H:203:1: note: candidate function not viable: requires single argument 'f1', but 2 arguments were provided
+  203 | UNARY_OPERATOR(vector, tensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:54:24: note: expanded from macro 'UNARY_OPERATOR'
+   54 | tmp<Field<ReturnType>> operator Op(const UList<Type1>& f1);                    \
+      |                        ^           ~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorField.H:203:1: note: candidate function not viable: requires single argument 'tf1', but 2 arguments were provided
+  203 | UNARY_OPERATOR(vector, tensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:57:24: note: expanded from macro 'UNARY_OPERATOR'
+   57 | tmp<Field<ReturnType>> operator Op(const tmp<Field<Type1>>& tf1);
+      |                        ^           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorField.H:204:1: note: candidate function not viable: requires single argument 'f1', but 2 arguments were provided
+  204 | UNARY_OPERATOR(tensor, vector, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:54:24: note: expanded from macro 'UNARY_OPERATOR'
+   54 | tmp<Field<ReturnType>> operator Op(const UList<Type1>& f1);                    \
+      |                        ^           ~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorField.H:204:1: note: candidate function not viable: requires single argument 'tf1', but 2 arguments were provided
+  204 | UNARY_OPERATOR(tensor, vector, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFunctionsM.H:57:24: note: expanded from macro 'UNARY_OPERATOR'
+   57 | tmp<Field<ReturnType>> operator Op(const tmp<Field<Type1>>& tf1);
+      |                        ^           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedSymmTensor.H:71:19: note: candidate function not viable: requires 1 argument, but 2 were provided
+   71 | dimensionedVector operator*(const dimensionedSymmTensor&);
+      |                   ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedTensor.H:73:19: note: candidate function not viable: requires 1 argument, but 2 were provided
+   73 | dimensionedVector operator*(const dimensionedTensor&);
+      |                   ^         ~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/dimensionedTensor.H:76:19: note: candidate function not viable: requires 1 argument, but 2 were provided
+   76 | dimensionedTensor operator*(const dimensionedVector&);
+      |                   ^         ~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedSymmTensorField.C:60:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+   60 | UNARY_OPERATOR(vector, symmTensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:105:44: note: expanded from macro 'UNARY_OPERATOR'
+  105 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  106 | (                                                                              \
+  107 |     const DimensionedField<Type1, GeoMesh>& f1                                 \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedSymmTensorField.C:60:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+   60 | UNARY_OPERATOR(vector, symmTensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:124:44: note: expanded from macro 'UNARY_OPERATOR'
+  124 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  125 | (                                                                              \
+  126 |     const tmp<DimensionedField<Type1, GeoMesh>>& tf1                           \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricSymmTensorField.C:271:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+  271 | UNARY_OPERATOR(vector, symmTensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:122:54: note: expanded from macro 'UNARY_OPERATOR'
+  122 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  123 | (                                                                              \
+  124 |     const GeometricField<Type1, PatchField, GeoMesh>& f1                       \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricSymmTensorField.C:271:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+  271 | UNARY_OPERATOR(vector, symmTensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:141:54: note: expanded from macro 'UNARY_OPERATOR'
+  141 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  142 | (                                                                              \
+  143 |     const tmp<GeometricField<Type1, PatchField, GeoMesh>>& tf1                 \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/symmTensorFieldField.C:219:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+  219 | UNARY_OPERATOR(vector, symmTensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:95:36: note: expanded from macro 'UNARY_OPERATOR'
+   95 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+   96 | (                                                                              \
+   97 |     const FieldField<Field, Type1>& f1                                         \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/symmTensorFieldField.C:219:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+  219 | UNARY_OPERATOR(vector, symmTensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:106:36: note: expanded from macro 'UNARY_OPERATOR'
+  106 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+  107 | (                                                                              \
+  108 |     const tmp<FieldField<Field, Type1>>& tf1                                   \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedTensorField.C:61:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+   61 | UNARY_OPERATOR(vector, tensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:105:44: note: expanded from macro 'UNARY_OPERATOR'
+  105 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  106 | (                                                                              \
+  107 |     const DimensionedField<Type1, GeoMesh>& f1                                 \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedTensorField.C:61:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+   61 | UNARY_OPERATOR(vector, tensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:124:44: note: expanded from macro 'UNARY_OPERATOR'
+  124 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  125 | (                                                                              \
+  126 |     const tmp<DimensionedField<Type1, GeoMesh>>& tf1                           \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedTensorField.C:62:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+   62 | UNARY_OPERATOR(tensor, vector, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:105:44: note: expanded from macro 'UNARY_OPERATOR'
+  105 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  106 | (                                                                              \
+  107 |     const DimensionedField<Type1, GeoMesh>& f1                                 \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedTensorField.C:62:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+   62 | UNARY_OPERATOR(tensor, vector, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/DimensionedFieldFunctionsM.C:124:44: note: expanded from macro 'UNARY_OPERATOR'
+  124 | tmp<DimensionedField<ReturnType, GeoMesh>> operator Op                         \
+      |                                            ^
+  125 | (                                                                              \
+  126 |     const tmp<DimensionedField<Type1, GeoMesh>>& tf1                           \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricTensorField.C:279:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+  279 | UNARY_OPERATOR(vector, tensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:122:54: note: expanded from macro 'UNARY_OPERATOR'
+  122 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  123 | (                                                                              \
+  124 |     const GeometricField<Type1, PatchField, GeoMesh>& f1                       \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricTensorField.C:279:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+  279 | UNARY_OPERATOR(vector, tensor, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:141:54: note: expanded from macro 'UNARY_OPERATOR'
+  141 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  142 | (                                                                              \
+  143 |     const tmp<GeometricField<Type1, PatchField, GeoMesh>>& tf1                 \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricTensorField.C:280:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+  280 | UNARY_OPERATOR(tensor, vector, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:122:54: note: expanded from macro 'UNARY_OPERATOR'
+  122 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  123 | (                                                                              \
+  124 |     const GeometricField<Type1, PatchField, GeoMesh>& f1                       \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricTensorField.C:280:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+  280 | UNARY_OPERATOR(tensor, vector, *, hdual, transform)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/GeometricFieldFunctionsM.C:141:54: note: expanded from macro 'UNARY_OPERATOR'
+  141 | tmp<GeometricField<ReturnType, PatchField, GeoMesh>> operator Op               \
+      |                                                      ^
+  142 | (                                                                              \
+  143 |     const tmp<GeometricField<Type1, PatchField, GeoMesh>>& tf1                 \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorFieldField.C:226:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+  226 | UNARY_OPERATOR(vector, tensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:95:36: note: expanded from macro 'UNARY_OPERATOR'
+   95 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+   96 | (                                                                              \
+   97 |     const FieldField<Field, Type1>& f1                                         \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorFieldField.C:226:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+  226 | UNARY_OPERATOR(vector, tensor, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:106:36: note: expanded from macro 'UNARY_OPERATOR'
+  106 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+  107 | (                                                                              \
+  108 |     const tmp<FieldField<Field, Type1>>& tf1                                   \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorFieldField.C:227:1: note: candidate function template not viable: requires single argument 'f1', but 2 arguments were provided
+  227 | UNARY_OPERATOR(tensor, vector, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:95:36: note: expanded from macro 'UNARY_OPERATOR'
+   95 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+   96 | (                                                                              \
+   97 |     const FieldField<Field, Type1>& f1                                         \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/tensorFieldField.C:227:1: note: candidate function template not viable: requires single argument 'tf1', but 2 arguments were provided
+  227 | UNARY_OPERATOR(tensor, vector, *, hdual)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Volumes/OpenFOAM-v2506/OpenFOAM-v2506/src/OpenFOAM/lnInclude/FieldFieldFunctionsM.C:106:36: note: expanded from macro 'UNARY_OPERATOR'
+  106 | tmp<FieldField<Field, ReturnType>> operator Op                                 \
+      |                                    ^
+  107 | (                                                                              \
+  108 |     const tmp<FieldField<Field, Type1>>& tf1                                   \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.
+make: *** [Make/darwin64ClangDPInt32Opt/laserHeatFoam.o] Error 1
