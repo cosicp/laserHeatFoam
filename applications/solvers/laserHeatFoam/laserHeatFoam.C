@@ -57,6 +57,8 @@ Description
 #include "fvCFD.H"
 #include "fvOptions.H"
 #include "simpleControl.H"
+#include "cmath"  
+#include "interpolationTable.H" 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -88,6 +90,7 @@ int main(int argc, char *argv[])
 
         #include "updateLaser.H"
 
+        
         while (simple.correctNonOrthogonal())
         {
             fvScalarMatrix TEqn

@@ -96,3 +96,28 @@ volScalarField Q
     ),
     mesh
 );
+
+IOdictionary LaserProperties(
+    IOobject(
+        "LaserProperties",
+        mesh.time().constant(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::NO_WRITE));
+
+// scalar P (readScalar(LaserProperties.lookup("power")));
+scalar A (readScalar(LaserProperties.lookup("absorptivity")));
+scalar rb(readScalar(LaserProperties.lookup("laserRadius")));
+scalar d (readScalar(LaserProperties.lookup("absorptionDepth")));
+
+interpolationTable<scalar> laserPowerSeries
+(
+    LaserProperties.subDict("timeVsLaserPower")
+);
+
+interpolationTable<vector> laserPositionSeries
+(
+    LaserProperties.subDict("timeVsLaserPosition")
+);
+
+
