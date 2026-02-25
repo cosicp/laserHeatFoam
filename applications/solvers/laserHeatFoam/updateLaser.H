@@ -1,14 +1,13 @@
 // --- LPBF parameters ---
 // --- Compute current laser position ---
 
+Info << "Updating laser\n" << endl;
 vector laserPos = laserPositionSeries(runTime.time().timeOutputValue());
 scalar laserPower = laserPowerSeries(runTime.time().timeOutputValue());
 
-// scalar deltaT = 0.001;
-// scalar Q;
-
 Q = dimensionedScalar("Q", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0);
 
+// Info << Q<< endl;
 // Loop over all 
 
 forAll(mesh.cells(), cellI)
@@ -19,10 +18,10 @@ forAll(mesh.cells(), cellI)
     vector rVec = cellPos - laserPos;
     scalar r = Foam::sqrt(rVec.x()*rVec.x() + rVec.y()*rVec.y());
     scalar z = rVec.z();                 // depth
-
     // Gaussian volumetric heat source
-     Q[cellI] = (2.0 * A * laserPower) / (M_PI * Foam::sqrt(rb) * d)
-               * Foam::exp(-2.0 * Foam::sqrt(r)/Foam::sqrt(rb))
-               * Foam::exp(-z/d);
-
+     Q[cellI] = (2.0 * A * laserPower) / (M_PI * Foam::sqr(rb) * d)
+               * Foam::exp(-2.0 * Foam::sqr(r)/Foam::sqr(rb))
+               * Foam::exp(-(100e-6-z)/d);
 }
+// Info << "Q After update\n" << endl;
+// Info << Q<< endl;

@@ -32,4 +32,4 @@ V_incident (0 1 0);
 
 laserRadius 25e-6;
 absorptionDepth 30e-6;
-absorptivity 0.5;
+absorptivity 0.4;

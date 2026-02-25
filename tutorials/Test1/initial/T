@@ -17,7 +17,7 @@ FoamFile
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 298.0;
+internalField   uniform 300;
 
 boundaryField
 {
@@ -29,14 +29,28 @@ boundaryField
     {
       type		zeroGradient;
     }
+
     topWall
     {
-    type		zeroGradient;
-      }
+        type externalWallHeatFluxTemperature;
+        mode coefficient;
+
+        Ta uniform 300;        // ambient temperature (K)
+        h  uniform 20;         // convection coefficient W/m²/K
+
+        epsilon uniform 0.3;   // emissivity
+        sigma 5.67e-8;         // Stefan-Boltzmann constant
+
+        kappaMethod solidThermo;
+        value uniform 300;
+    }
+
     bottomWall
     {
-	type		zeroGradient;
+        type fixedValue;
+        value uniform 300;
     }
+
     front
     {
 	type		zeroGradient;

@@ -1,0 +1,55 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM / foam-extend thermal properties       |
+|  \\    /   O peration     | Version: 4.0                                   |
+|   \\  /    A nd           |                                                 |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heSolidThermo;
+    mixture         pureSolid;
+    transport       const;
+    thermo          const;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+// Density [kg/m^3]
+rho             4100;
+
+// Specific heat [J/kg/K]
+Cp              570;
+
+// Thermal conductivity [W/m/K]
+kappa           8;
+
+// Latent heat for melting [J/kg]
+L               3.6e5;
+
+// Melting temperature [K]
+Tm              1878;
+
+// Temperature interval for latent heat smoothing [K]
+dT              100;
+
+// Optional: reference temperature
+TRef            300;
+
+// Optional: make properties temperature-dependent (example)
+// Cp = table
+// kappa = table
+// But for now keep constant
+
+// ************************************************************************* //

@@ -60,6 +60,8 @@ Description
 #include "cmath"  
 #include "interpolationTable.H" 
 
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
@@ -89,13 +91,21 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         #include "updateLaser.H"
-
         
+        volScalarField cpEff(rho*cp);
+
+        // Latent heat
+        forAll(T, cellI)
+        {
+            if (T[cellI] > Tm && T[cellI] < Tm+dT)
+                cpEff[cellI] = cp[cellI] + L/dT;
+        }
+
         while (simple.correctNonOrthogonal())
         {
             fvScalarMatrix TEqn
             (
-                rho * cp * fvm::ddt(T)  - fvm::laplacian(k, T) == Q
+                    fvm::ddt(cpEff,T)  - fvm::laplacian(k, T) == Q
             );
 
             fvOptions.constrain(TEqn);
@@ -103,6 +113,22 @@ int main(int argc, char *argv[])
             fvOptions.correct(T);
         }
 
+        // TODO need to finish this
+        
+        // Cooling terms 
+        forAll(topPatch, faceI)
+        {
+            scalar Tsurf = topPatch[faceI];
+
+            // Convective cooling
+            topPatch[faceI] = Tsurf + runTime.deltaT().value() * h/(rho[faceI]*cpEff[faceI]) * (Ta - Tsurf);
+
+            // Radiative cooling
+            topPatch[faceI] += runTime.deltaT().value() * epsilon*sigma/(rho[faceI]*cpEff[faceI]) * (pow(Tsurf,4) - pow(Ta,4));
+        }
+
+
+        Info << "T after sol: " << max(T) << endl;
         #include "write.H"
         runTime.printExecutionTime(Info);
     }
