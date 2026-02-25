@@ -21,7 +21,7 @@ forAll(mesh.cells(), cellI)
     // Gaussian volumetric heat source
      Q[cellI] = (2.0 * A * laserPower) / (M_PI * Foam::sqr(rb) * d)
                * Foam::exp(-2.0 * Foam::sqr(r)/Foam::sqr(rb))
-               * Foam::exp(-(100e-6-z)/d);
+               * Foam::exp(-(200e-6-z)/d);
 }
 // Info << "Q After update\n" << endl;
 // Info << Q<< endl;

@@ -146,26 +146,26 @@ IOdictionary thermoDict
 // const scalar rho = 4100.0;     // kg/m³
 // const scalar Cp  = 570.0;      // J/kg/K
 // const scalar k   = 8.0;        // W/m/K
-const scalar L   = 3.6e5;      // J/kg latent heat
-const scalar Tm  = 1878.0;     // K
-const scalar dT  = 100.0;      // smoothing interval for latent heat
+// const scalar L   = 3.6e5;      // J/kg latent heat
+// const scalar Tm  = 1878.0;     // K
+// const scalar dT  = 100.0;      // smoothing interval for latent heat
 
-// Get patch ID by name
-label patchID = mesh.boundaryMesh().findPatchID("topWall");
-
-// Access the fvPatch
-// const fvPatch& topPatch = mesh.boundary()[patchID];
-const labelList& faceCells = mesh.boundary()[patchID].faceCells();
-
-// 1️⃣ Get the patch ID
+// // Get patch ID by name
 // label patchID = mesh.boundaryMesh().findPatchID("topWall");
 
-// 2️⃣ Get the patch field as fvPatchScalarField (non-const)
-fvPatchScalarField& topPatch =
-    refCast<fvPatchScalarField>(T.boundaryField()[patchID]);
+// // Access the fvPatch
+// // const fvPatch& topPatch = mesh.boundary()[patchID];
+// const labelList& faceCells = mesh.boundary()[patchID].faceCells();
 
-// Radiation cooling
-scalar epsilon = 0.3;
-scalar sigma = 5.67e-8;
-scalar h = 20.0;   // W/m²/K
-scalar Ta = 300.0; // ambient
+// // 1️⃣ Get the patch ID
+// // label patchID = mesh.boundaryMesh().findPatchID("topWall");
+
+// // 2️⃣ Get the patch field as fvPatchScalarField (non-const)
+// fvPatchScalarField& topPatch =
+//     refCast<fvPatchScalarField>(T.boundaryField()[patchID]);
+
+// // Radiation cooling
+// scalar epsilon = 0.3;
+// scalar sigma = 5.67e-8;
+// scalar h = 20.0;   // W/m²/K
+// scalar Ta = 300.0; // ambient
