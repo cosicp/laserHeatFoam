@@ -30,6 +30,20 @@ volScalarField k
     dimensionedScalar(dimViscosity, Zero)
 );
 
+volScalarField solidificationTime
+(
+    IOobject
+    (
+        "solidificationTime",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
+
 // if (!DT.headerOk())
 // {
 //     IOdictionary transportProperties

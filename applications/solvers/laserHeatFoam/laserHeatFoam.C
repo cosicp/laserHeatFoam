@@ -107,7 +107,6 @@ int main(int argc, char *argv[])
             (
                     rho*cp*fvm::ddt(T)  - fvm::laplacian(k, T) == Q
             );
-
             fvOptions.constrain(TEqn);
             TEqn.solve();
             fvOptions.correct(T);
@@ -115,6 +114,18 @@ int main(int argc, char *argv[])
 
         // TODO need to finish this
         
+        forAll(T, cellI)
+        {
+            if (T[cellI] > 550.0)
+            {
+                solidificationTime[cellI] = 1.0;
+            }
+        }
+
+        // solidificationTime
+
+
+
         // Cooling terms 
         // forAll(topPatch, faceI)
         // {
