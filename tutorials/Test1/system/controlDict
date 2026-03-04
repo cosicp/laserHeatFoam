@@ -45,24 +45,7 @@ timePrecision   6;
 
 runTimeModifiable true;
 
-functions
-{
-    meltPoolSurface
-    {
-        type isoSurface;
-        libs ("libsampling.so");
-
-        isoField T;
-        isoValue 1878;   // melting temperature
-
-        interpolate true;
-        regularise true;
-
-        writeControl timeStep;
-        writeInterval 10;
-    }
-}
-
-
-
+adjustTimeStep  yes;
+maxDeltaT       1e-5;     // whatever upper bound you allow
+maxDi           0.2;      // typical 0.1–1.0 (smaller = more conservative)
 // ************************************************************************* //

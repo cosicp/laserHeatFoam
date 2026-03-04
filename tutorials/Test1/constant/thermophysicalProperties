@@ -15,17 +15,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-thermoType
-{
-    type            heSolidThermo;
-    mixture         pureSolid;
-    transport       const;
-    thermo          const;
-    equationOfState rhoConst;
-    specie          specie;
-    energy          sensibleEnthalpy;
-}
-
 // Density [kg/m^3]
 rho             4100;
 
@@ -33,19 +22,23 @@ rho             4100;
 Cp              570;
 
 // Thermal conductivity [W/m/K]
-kappa           8;
-
-// Latent heat for melting [J/kg]
-L               3.6e5;
+kappa           6.7;
 
 // Melting temperature [K]
-Tm              1878;
+Tm               1878;
 
 // Temperature interval for latent heat smoothing [K]
 dT              100;
 
 // Optional: reference temperature
 TRef            300;
+Tinf            300;
+
+Tl             1928;
+Ts             1878;
+
+// Latent heat for melting [J/kg]
+L               2.85e5;
 
 // Optional: make properties temperature-dependent (example)
 // Cp = table

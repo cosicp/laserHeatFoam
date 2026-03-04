@@ -5,7 +5,6 @@ Info << "Updating laser\n" << endl;
 vector laserPos = laserPositionSeries(runTime.time().timeOutputValue());
 scalar laserPower = laserPowerSeries(runTime.time().timeOutputValue());
 scalar z_layer = laserPos.z();                 // depth
-Info << "z_layer: " << z_layer << endl;
 
 Q = dimensionedScalar("Q", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0);
 
@@ -28,3 +27,13 @@ forAll(mesh.cells(), cellI)
 
 // Info << "Q After update\n" << endl;
 // Info << Q<< endl;
+
+// scalar Pdep = 0.0;
+
+// forAll(Q, cellI)
+// {
+//     Pdep += Q[cellI]*mesh.V()[cellI];
+// }
+
+// Pdep = gSum(Pdep);   // parallel sum
+// Info<< "Deposited power = " << Pdep << " W" << nl << endl;

@@ -98,6 +98,13 @@ volScalarField cp
     mesh
 );
 
+volScalarField cpEff
+(
+    IOobject("cpEff", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    cp
+);
+
+
 volScalarField Q
 (
     IOobject
@@ -146,6 +153,43 @@ IOdictionary thermoDict
     )
 );
 
+scalar Ts (readScalar(thermoDict.lookup("Ts")));
+scalar Tl (readScalar(thermoDict.lookup("Tl")));
+// dimensionedScalar Tinf("Tinf", dimTemperature, readScalar(thermoDict.lookup("Tinf")));   // K
+dimensionedScalar Tinf("Tinf", dimTemperature, 300);   // K
+dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));   // J/kg
+
+const dictionary& controlDict = runTime.controlDict();
+
+Switch adjustTimeStep
+(
+    controlDict.lookupOrDefault<Switch>("adjustTimeStep", false)
+);
+
+scalar maxDeltaT
+(
+    controlDict.lookupOrDefault<scalar>("maxDeltaT", GREAT)
+);
+
+scalar maxDiTarget
+(
+    controlDict.lookupOrDefault<scalar>("maxDi", 0.2)
+);
+
+volScalarField fL
+(
+    IOobject("fL", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
+
+volScalarField fLold
+(
+    IOobject("fLold", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
+    fL
+);
+
+
 // 
 // heSolidThermo<basicThermo, pureSolid> solidThermo(mesh, "solid");
 
@@ -183,3 +227,19 @@ IOdictionary thermoDict
 // scalar sigma = 5.67e-8;
 // scalar h = 20.0;   // W/m²/K
 // scalar Ta = 300.0; // ambient
+
+
+volScalarField betaLoss
+(
+    IOobject("betaLoss", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    mesh,
+    dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0) // W/m3/K
+);
+
+
+// volScalarField radiationLoss
+// (
+//     IOobject("radiationLoss", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+//     mesh,
+//     dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0) // W/m3/K
+// );
