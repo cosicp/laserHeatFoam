@@ -5,7 +5,6 @@ const scalar epsRad = 0.5;                  // emissivity
 const scalar sigma  = 5.670374419e-8;       // Stefan-Boltzmann
 scalar hLoss = 30e-6;   // smear thickness
 
-
 radiationLoss = dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0);
 
 forAll(mesh.cells(), cellI)
@@ -20,4 +19,5 @@ forAll(mesh.cells(), cellI)
         radiationLoss[cellI] = hRad/hLoss; // W/m3/K
     }
 }
+
 radiationLoss.correctBoundaryConditions();

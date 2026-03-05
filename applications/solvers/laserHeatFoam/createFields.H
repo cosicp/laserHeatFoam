@@ -13,7 +13,6 @@ volScalarField T
     mesh
 );
 
-
 Info<< "Reading diffusivity k\n" << endl;
 
 volScalarField k
@@ -30,11 +29,11 @@ volScalarField k
     dimensionedScalar(dimViscosity, Zero)
 );
 
-volScalarField solidificationTime
+volScalarField meltHistory
 (
     IOobject
     (
-        "solidificationTime",
+        "meltHistory",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
@@ -44,33 +43,7 @@ volScalarField solidificationTime
     dimensionedScalar("zero", dimless, 0.0)
 );
 
-// if (!DT.headerOk())
-// {
-//     IOdictionary transportProperties
-//     (
-//         IOobject
-//         (
-//             "transportProperties",
-//             runTime.constant(),
-//             mesh,
-//             IOobject::MUST_READ_IF_MODIFIED,
-//             IOobject::NO_WRITE
-//         )
-//     );
-//     DT = dimensionedScalar("DT", dimViscosity, transportProperties);
-// }
-
 #include "createFvOptions.H"
-
-// volScalarField rho(
-//     IOobject(
-//         "rho",
-//         runTime.timeName(),
-//         mesh,
-//         IOobject::READ_IF_PRESENT,
-//         IOobject::NO_WRITE),
-//     alphaM *((gT * rhoL) + ((scalar(1) - gT) * rhoS)) + (scalar(1) - alphaM) * rhoG,
-//     zeroGradientFvPatchScalarField::typeName);
 
 volScalarField rho
 (
@@ -104,7 +77,6 @@ volScalarField cpEff
     cp
 );
 
-
 volScalarField Q
 (
     IOobject
@@ -127,9 +99,9 @@ IOdictionary LaserProperties(
         IOobject::NO_WRITE));
 
 // scalar P (readScalar(LaserProperties.lookup("power")));
-scalar A (readScalar(LaserProperties.lookup("absorptivity")));
-scalar rb(readScalar(LaserProperties.lookup("laserRadius")));
-scalar d (readScalar(LaserProperties.lookup("absorptionDepth")));
+[[maybe_unused]] scalar A (readScalar(LaserProperties.lookup("absorptivity")));
+[[maybe_unused]] scalar rb(readScalar(LaserProperties.lookup("laserRadius")));
+[[maybe_unused]] scalar d (readScalar(LaserProperties.lookup("absorptionDepth")));
 
 interpolationTable<scalar> laserPowerSeries
 (
@@ -155,7 +127,6 @@ IOdictionary thermoDict
 
 scalar Ts (readScalar(thermoDict.lookup("Ts")));
 scalar Tl (readScalar(thermoDict.lookup("Tl")));
-// dimensionedScalar Tinf("Tinf", dimTemperature, readScalar(thermoDict.lookup("Tinf")));   // K
 dimensionedScalar Tinf("Tinf", dimTemperature, 300);   // K
 dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));   // J/kg
 
@@ -189,57 +160,9 @@ volScalarField fLold
     fL
 );
 
-
-// 
-// heSolidThermo<basicThermo, pureSolid> solidThermo(mesh, "solid");
-
-// rho = solidThermo.rho();
-// cp  = solidThermo.Cp();
-// k   = solidThermo.kappa();
-// scalar L   = solidThermo.L();
-// scalar Tm  = solidThermo.Tm();
-// volScalarField H = solidThermo.H(T); // sensible + latent
-
-// Material properties
-// const scalar rho = 4100.0;     // kg/m³
-// const scalar Cp  = 570.0;      // J/kg/K
-// const scalar k   = 8.0;        // W/m/K
-// const scalar L   = 3.6e5;      // J/kg latent heat
-// const scalar Tm  = 1878.0;     // K
-// const scalar dT  = 100.0;      // smoothing interval for latent heat
-
-// // Get patch ID by name
-// label patchID = mesh.boundaryMesh().findPatchID("topWall");
-
-// // Access the fvPatch
-// // const fvPatch& topPatch = mesh.boundary()[patchID];
-// const labelList& faceCells = mesh.boundary()[patchID].faceCells();
-
-// // 1️⃣ Get the patch ID
-// // label patchID = mesh.boundaryMesh().findPatchID("topWall");
-
-// // 2️⃣ Get the patch field as fvPatchScalarField (non-const)
-// fvPatchScalarField& topPatch =
-//     refCast<fvPatchScalarField>(T.boundaryField()[patchID]);
-
-// // Radiation cooling
-// scalar epsilon = 0.3;
-// scalar sigma = 5.67e-8;
-// scalar h = 20.0;   // W/m²/K
-// scalar Ta = 300.0; // ambient
-
-
 volScalarField betaLoss
 (
     IOobject("betaLoss", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
     mesh,
     dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0) // W/m3/K
 );
-
-
-// volScalarField radiationLoss
-// (
-//     IOobject("radiationLoss", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
-//     mesh,
-//     dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0) // W/m3/K
-// );

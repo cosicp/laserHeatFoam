@@ -23,7 +23,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         100e-5;
+endTime         130e-5;
 
 deltaT          2e-7;
 
@@ -47,5 +47,5 @@ runTimeModifiable true;
 
 adjustTimeStep  yes;
 maxDeltaT       1e-5;     // whatever upper bound you allow
-maxDi           0.2;      // typical 0.1–1.0 (smaller = more conservative)
+maxDi           0.5;      // typical 0.1–1.0 (smaller = more conservative)
 // ************************************************************************* //

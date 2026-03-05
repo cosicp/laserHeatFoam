@@ -57,22 +57,17 @@ Description
 #include "fvCFD.H"
 #include "fvOptions.H"
 #include "simpleControl.H"
-#include "cmath"  
-#include "interpolationTable.H" 
-
-
+#include "cmath"
+#include "interpolationTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
-    argList::addNote
-    (
-        "Laplace equation solver for a scalar quantity."
-    );
+    argList::addNote(
+        "Laplace equation solver for a scalar quantity.");
 
     #include "postProcess.H"
-
     #include "addCheckCaseOptions.H"
     #include "setRootCaseLists.H"
     #include "createTime.H"
@@ -84,105 +79,87 @@ int main(int argc, char *argv[])
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    Info<< "\nCalculating temperature distribution\n" << endl;
+    Info << "\nCalculating temperature distribution\n"
+         << endl;
 
     while (runTime.loop())
     {
-        Info<< "Time = " << runTime.timeName() << nl << endl;
+        Info << "Time = " << runTime.timeName() << nl << endl;
 
         #include "updateLaser.H"
         #include "updateQlatent.H"
         #include "updateBetaLoss.H"
-        #include "DiffusionNo.H"   
-
+        #include "DiffusionNo.H"
 
         // Find index of maximum T (works on many versions via global max + scan)
-scalar Tmax = -GREAT;
-label cMax = -1;
-forAll(T, cellI)
-{
-    if (T[cellI] > Tmax)
-    {
-        Tmax = T[cellI];
-        cMax = cellI;
-    }
-}
-Tmax = returnReduce(Tmax, maxOp<scalar>());
+        // scalar Tmax = -GREAT;
+        // label cMax = -1;
+        // forAll(T, cellI)
+        // {
+        //     if (T[cellI] > Tmax)
+        //     {
+        //         Tmax = T[cellI];
+        //         cMax = cellI;
+        //     }
+        // }
+        // Tmax = returnReduce(Tmax, maxOp<scalar>());
 
-// Find local cell that matches global Tmax (simple approach)
-forAll(T, cellI)
-{
-    if (Foam::mag(T[cellI] - Tmax) < 1e-9)
-    {
-        cMax = cellI;
-        break;
-    }
-}
+        // // Find local cell that matches global Tmax (simple approach)
+        // forAll(T, cellI)
+        // {
+        //     if (Foam::mag(T[cellI] - Tmax) < 1e-9)
+        //     {
+        //         cMax = cellI;
+        //         break;
+        //     }
+        // }
 
-if (cMax >= 0)
-{
-    Info<< "Tmax=" << T[cMax]
-        << " z=" << mesh.C()[cMax].z()
-        << " Q=" << Q[cMax]
-        << " Qlatent=" << Qlatent[cMax]
-        << " betaLoss=" << betaLoss[cMax]
-        << " sink(W/m3)=" << betaLoss[cMax]*(Tinf.value() - T[cMax])
-        << nl << endl;
-}
+        // if (cMax >= 0)
+        // {
+        //     Info << "Tmax=" << T[cMax]
+        //          << " z=" << mesh.C()[cMax].z()
+        //          << " Q=" << Q[cMax]
+        //          << " Qlatent=" << Qlatent[cMax]
+        //          << " betaLoss=" << betaLoss[cMax]
+        //          << " sink(W/m3)=" << betaLoss[cMax] * (Tinf.value() - T[cMax])
+        //          << nl << endl;
+        // }
 
-Info<< "betaLoss max=" << gMax(betaLoss) << " min=" << gMin(betaLoss) << nl;
-Info<< "Q max=" << gMax(Q) << " Qlatent max=" << gMax(Qlatent) << " min=" << gMin(Qlatent) << nl;
-
+        // Info << "betaLoss max=" << gMax(betaLoss) << " min=" << gMin(betaLoss) << nl;
+        // Info << "Q max=" << gMax(Q) << " Qlatent max=" << gMax(Qlatent) << " min=" << gMin(Qlatent) << nl;
 
         while (simple.correctNonOrthogonal())
         {
-            fvScalarMatrix TEqn
-            (
-                rho*cp*fvm::ddt(T)  
+            fvScalarMatrix TEqn(
+                rho * cp * fvm::ddt(T) 
                 - fvm::laplacian(k, T) 
-                + fvm::Sp(betaLoss, T)          // adds +betaLoss*T on LHS
-                  == Q + Qlatent + betaLoss*Tinf
+                + fvm::Sp(betaLoss, T) 
+                == Q + Qlatent + betaLoss * Tinf 
             );
-            
+
             fvOptions.constrain(TEqn);
             TEqn.solve();
             fvOptions.correct(T);
         }
 
-        // TODO need to finish this
-        
+        // Update melt history
         forAll(T, cellI)
         {
             if (T[cellI] > Tl)
             {
-                solidificationTime[cellI] = 1.0;
+                meltHistory[cellI] = 1.0;
             }
         }
-
-        // solidificationTime
-
-        // Cooling terms 
-        // forAll(topPatch, faceI)
-        // {
-        //     scalar Tsurf = topPatch[faceI];
-
-        //     // Convective cooling
-        //     topPatch[faceI] = Tsurf + runTime.deltaT().value() * h/(rho[faceI]*cpEff[faceI]) * (Ta - Tsurf);
-
-        //     // Radiative cooling
-        //     topPatch[faceI] += runTime.deltaT().value() * epsilon*sigma/(rho[faceI]*cpEff[faceI]) * (pow(Tsurf,4) - pow(Ta,4));
-        // }
-
 
         Info << "T after sol: " << max(T) << endl;
         #include "write.H"
         runTime.printExecutionTime(Info);
     }
 
-    Info<< "End\n" << endl;
+    Info << "End\n"
+         << endl;
 
     return 0;
 }
-
 
 // ************************************************************************* //
