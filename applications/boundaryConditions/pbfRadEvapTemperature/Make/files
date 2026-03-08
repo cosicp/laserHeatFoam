@@ -1,0 +1,2 @@
+pbfRadEvapTemperature.C
+LIB = $(FOAM_USER_LIBBIN)/libpbfRadEvapTemperature
