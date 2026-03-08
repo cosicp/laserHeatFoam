@@ -91,43 +91,6 @@ int main(int argc, char *argv[])
         #include "updateBetaLoss.H"
         #include "DiffusionNo.H"
 
-        // Find index of maximum T (works on many versions via global max + scan)
-        // scalar Tmax = -GREAT;
-        // label cMax = -1;
-        // forAll(T, cellI)
-        // {
-        //     if (T[cellI] > Tmax)
-        //     {
-        //         Tmax = T[cellI];
-        //         cMax = cellI;
-        //     }
-        // }
-        // Tmax = returnReduce(Tmax, maxOp<scalar>());
-
-        // // Find local cell that matches global Tmax (simple approach)
-        // forAll(T, cellI)
-        // {
-        //     if (Foam::mag(T[cellI] - Tmax) < 1e-9)
-        //     {
-        //         cMax = cellI;
-        //         break;
-        //     }
-        // }
-
-        // if (cMax >= 0)
-        // {
-        //     Info << "Tmax=" << T[cMax]
-        //          << " z=" << mesh.C()[cMax].z()
-        //          << " Q=" << Q[cMax]
-        //          << " Qlatent=" << Qlatent[cMax]
-        //          << " betaLoss=" << betaLoss[cMax]
-        //          << " sink(W/m3)=" << betaLoss[cMax] * (Tinf.value() - T[cMax])
-        //          << nl << endl;
-        // }
-
-        // Info << "betaLoss max=" << gMax(betaLoss) << " min=" << gMin(betaLoss) << nl;
-        // Info << "Q max=" << gMax(Q) << " Qlatent max=" << gMax(Qlatent) << " min=" << gMin(Qlatent) << nl;
-
         while (simple.correctNonOrthogonal())
         {
             fvScalarMatrix TEqn(
