@@ -96,8 +96,7 @@ int main(int argc, char *argv[])
             fvScalarMatrix TEqn(
                 rho * cp * fvm::ddt(T) 
                 - fvm::laplacian(k, T) 
-                + fvm::Sp(betaLoss, T) 
-                == Q + Qlatent + betaLoss * Tinf 
+                == Q 
             );
 
             fvOptions.constrain(TEqn);
