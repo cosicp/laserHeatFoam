@@ -25,10 +25,10 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    laplacianFoam
+    laserHeatFoam
 
 Group
-    grpBasicSolvers
+    LPBF solvers
 
 Description
     Laplace equation solver for a scalar quantity.
