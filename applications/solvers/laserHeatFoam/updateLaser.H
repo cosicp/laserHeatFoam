@@ -14,16 +14,21 @@ forAll(mesh.cells(), cellI)
     vector cellPos = mesh.C()[cellI]; // cell center
     vector rVec = cellPos - laserPos;
     scalar r = Foam::sqrt(rVec.x() * rVec.x() + rVec.y() * rVec.y());
-    // Gaussian volumetric heat source
-    if (cellPos.z() < z_layer)
+    scalar Qr = (2.0 * A * laserPower) / (M_PI * Foam::sqr(rb) * d)
+                * Foam::exp(-2.0 * Foam::sqr(r) / Foam::sqr(rb));
+
+    if (laserModel == "exponential")
     {
-        Q[cellI] = (2.0 * A * laserPower) / (M_PI * Foam::sqr(rb) * d) 
-                    * Foam::exp(-2.0 * Foam::sqr(r) / Foam::sqr(rb)) 
-                    * Foam::exp(-(z_layer - cellPos.z()) / d);
+        // Exponential decay in z below the surface
+        Q[cellI] = (cellPos.z() < z_layer)
+            ? Qr * Foam::exp(-(z_layer - cellPos.z()) / d)
+            : 0.0;
     }
-    else
+    else // "cylindrical" (default): uniform within depth window d
     {
-        Q[cellI] = 0.0;
+        Q[cellI] = (cellPos.z() < z_layer && cellPos.z() > z_layer - d)
+            ? Qr
+            : 0.0;
     }
 }
 

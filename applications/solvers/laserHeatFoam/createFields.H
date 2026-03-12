@@ -102,6 +102,7 @@ IOdictionary LaserProperties(
 [[maybe_unused]] scalar A (readScalar(LaserProperties.lookup("absorptivity")));
 [[maybe_unused]] scalar rb(readScalar(LaserProperties.lookup("laserRadius")));
 [[maybe_unused]] scalar d (readScalar(LaserProperties.lookup("absorptionDepth")));
+word laserModel(LaserProperties.lookupOrDefault<word>("laserModel", "cylindrical"));
 
 interpolationTable<scalar> laserPowerSeries
 (
@@ -125,24 +126,24 @@ IOdictionary thermoDict
     )
 );
 
-scalar Ts (readScalar(thermoDict.lookup("Ts")));
-scalar Tl (readScalar(thermoDict.lookup("Tl")));
+[[maybe_unused]] scalar Ts (readScalar(thermoDict.lookup("Ts")));
+[[maybe_unused]] scalar Tl (readScalar(thermoDict.lookup("Tl")));
 dimensionedScalar Tinf("Tinf", dimTemperature, 300);   // K
 dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));   // J/kg
 
 const dictionary& controlDict = runTime.controlDict();
 
-Switch adjustTimeStep
+[[maybe_unused]] Switch adjustTimeStep
 (
     controlDict.lookupOrDefault<Switch>("adjustTimeStep", false)
 );
 
-scalar maxDeltaT
+[[maybe_unused]] scalar maxDeltaT
 (
     controlDict.lookupOrDefault<scalar>("maxDeltaT", GREAT)
 );
 
-scalar maxDiTarget
+[[maybe_unused]] scalar maxDiTarget
 (
     controlDict.lookupOrDefault<scalar>("maxDi", 0.2)
 );

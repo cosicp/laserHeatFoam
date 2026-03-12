@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
-  =========                 |
+  =========       E          |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
     \\  /    A nd           | www.openfoam.com
@@ -86,9 +86,7 @@ int main(int argc, char *argv[])
     {
         Info << "Time = " << runTime.timeName() << nl << endl;
 
-        // #include "updateLaserExp.H"
-        #include "updateLaserCyl.H"
-        // #include "updateBetaLoss.H"
+        #include "updateLaser.H"
         #include "DiffusionNo.H"
 
         while (simple.correctNonOrthogonal())
