@@ -65,7 +65,7 @@ Description
 int main(int argc, char *argv[])
 {
     argList::addNote(
-        "Laplace equation solver for a scalar quantity.");
+        "Heat conduction solver for Laser Powder Bed Fusion (LPBF) with a volumetric heat source.");
 
     #include "postProcess.H"
     #include "addCheckCaseOptions.H"
