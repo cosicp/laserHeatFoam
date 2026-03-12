@@ -31,20 +31,21 @@ Group
     LPBF solvers
 
 Description
-    Laplace equation solver for a scalar quantity.
+    Heat conduction solver for Laser Powder Bed Fusion (LPBF) with a volumetric heat source.
 
     \heading Solver details
-    The solver is applicable to, e.g. for thermal diffusion in a solid.  The
+    The solver solves the heat conduction equation for a scalar quantity, T.  The
     equation is given by:
 
     \f[
-        \ddt{T}  = \div \left( D_T \grad T \right)
+        \ddt{T}  = \div \left( \alpha \grad T \right) + Q
     \f]
 
     Where:
     \vartable
         T     | Scalar field which is solved for, e.g. temperature
-        D_T   | Diffusion coefficient
+        alpha | Thermal diffusivity
+        Q     | Volumetric heat source
     \endvartable
 
     \heading Required fields
