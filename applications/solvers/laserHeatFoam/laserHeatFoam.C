@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
         Info << "Time = " << runTime.timeName() << nl << endl;
 
         #include "updateLaser.H"
-        #include "updateQlatent.H"
+        // #include "updateQlatent.H"
         #include "updateBetaLoss.H"
         #include "DiffusionNo.H"
 
