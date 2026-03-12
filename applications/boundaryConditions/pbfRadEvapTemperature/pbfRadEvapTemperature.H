@@ -4,6 +4,7 @@
 #include "mixedFvPatchFields.H"
 #include "volFields.H"
 #include "dimensionedScalar.H"
+#include "Switch.H"
 
 namespace Foam
 {
@@ -18,6 +19,9 @@ class pbfRadEvapTemperatureFvPatchScalarField
     //- Ambient temperature
     scalar Tinf_;
 
+    //- Optional convection coefficient [W/m2/K]
+    scalar hConv_;
+
     //- Emissivity
     scalar epsilon_;
 
@@ -29,6 +33,9 @@ class pbfRadEvapTemperatureFvPatchScalarField
 
     //- Temperature clip for evaporation law
     scalar Tmax_;
+
+    //- Enable evaporation term
+    Switch enableEvap_;
 
     //- Recoil pressure factor
     scalar CP_;

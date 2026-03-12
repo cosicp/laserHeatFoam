@@ -13,8 +13,8 @@ volScalarField T
     mesh
 );
 
-Info<< "Reading diffusivity k\n" << endl;
-
+// k is computed from phase fractions every time step.
+// Dimension: thermal conductivity [W/(m·K)] = [kg m s^-3 K^-1]
 volScalarField k
 (
     IOobject
@@ -22,11 +22,11 @@ volScalarField k
         "k",
         runTime.timeName(),
         mesh,
-        IOobject::READ_IF_PRESENT,
+        IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
     mesh,
-    dimensionedScalar(dimViscosity, Zero)
+    dimensionedScalar("k", dimensionSet(1, 1, -3, -1, 0, 0, 0), 0.0)
 );
 
 volScalarField meltHistory
@@ -102,6 +102,7 @@ IOdictionary LaserProperties(
 [[maybe_unused]] scalar A (readScalar(LaserProperties.lookup("absorptivity")));
 [[maybe_unused]] scalar rb(readScalar(LaserProperties.lookup("laserRadius")));
 [[maybe_unused]] scalar d (readScalar(LaserProperties.lookup("absorptionDepth")));
+
 word laserModel(LaserProperties.lookupOrDefault<word>("laserModel", "cylindrical"));
 
 interpolationTable<scalar> laserPowerSeries
@@ -126,10 +127,38 @@ IOdictionary thermoDict
     )
 );
 
-[[maybe_unused]] scalar Ts (readScalar(thermoDict.lookup("Ts")));
-[[maybe_unused]] scalar Tl (readScalar(thermoDict.lookup("Tl")));
+dimensionedScalar Ts("Ts", dimTemperature, readScalar(thermoDict.lookup("Ts")));
+dimensionedScalar Tl("Tl", dimTemperature, readScalar(thermoDict.lookup("Tl")));
 dimensionedScalar Tinf("Tinf", dimTemperature, 300);   // K
 dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));   // J/kg
+
+// Phase-dependent conductivities (Proell 2020, eq. 5 / Proell 2023, eq. 5)
+// k = rp*kp + rm*km + rs*ks
+const dimensionedScalar kp("kp", dimensionSet(1, 1, -3, -1, 0, 0, 0),
+    readScalar(thermoDict.lookup("kp")));
+const dimensionedScalar ks("ks", dimensionSet(1, 1, -3, -1, 0, 0, 0),
+    readScalar(thermoDict.lookup("ks")));
+const dimensionedScalar km("km", dimensionSet(1, 1, -3, -1, 0, 0, 0),
+    readScalar(thermoDict.lookup("km")));
+
+// Consolidated fraction rc (Proell 2020, eq. 23):
+//   rc(0) = 1  for initially solid/substrate cells
+//   rc(0) = 0  for initially powder cells
+// rc can only increase (irreversible powder->melt transition).
+// Initialize from file if present; default = 0 (all powder).
+volScalarField rc
+(
+    IOobject
+    (
+        "rc",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
 
 const dictionary& controlDict = runTime.controlDict();
 
@@ -159,11 +188,4 @@ volScalarField fLold
 (
     IOobject("fLold", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
     fL
-);
-
-volScalarField betaLoss
-(
-    IOobject("betaLoss", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
-    mesh,
-    dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0) // W/m3/K
 );

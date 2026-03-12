@@ -87,29 +87,60 @@ int main(int argc, char *argv[])
     {
         Info << "Time = " << runTime.timeName() << nl << endl;
 
+        // Store previous liquid fraction (for post-processing / optional source-form)
+        fLold = fL;
+
         #include "updateLaser.H"
         #include "DiffusionNo.H"
+
+        // Apparent heat capacity latent heat model (Proell et al. 2020 / 2023):
+        // - liquid fraction fL ramps linearly between Ts and Tl
+        // - cpEff = cp + L * dfL/dT, where dfL/dT = 1/(Tl-Ts) in mushy zone else 0
+        // Notes:
+        // - L is specific latent heat [J/kg]
+        // - rho*cpEff enters the transient term (volumetric heat capacity)
+
+        const dimensionedScalar dTmush
+        (
+            "dTmush", dimTemperature, max(SMALL, (Tl - Ts).value())
+        );
+
+        fL = min
+        (
+            max((T - Ts)/dTmush, dimensionedScalar("zero", dimless, 0)),
+            dimensionedScalar("one",  dimless, 1)
+        );
+
+        const volScalarField mushyMask(pos(T - Ts)*pos(Tl - T));
+        cpEff = cp + mushyMask*(L/dTmush);
+
+        // Consolidated fraction (Proell 2020, eq. 23):
+        // rc = max fL ever reached — irreversible powder->melt transition.
+        rc = max(rc, fL);
+
+        // Phase fractions (Proell 2020, eqs. 24-26):
+        //   rp = 1 - rc   (powder fraction)
+        //   rm = fL        (melt fraction)
+        //   rs = rc - fL   (solid fraction)
+
+        // Phase-dependent thermal conductivity (Proell 2020, eq. 27):
+        //   k = rp*kp + rm*km + rs*ks
+        k = (scalar(1) - rc)*kp + fL*km + (rc - fL)*ks;
+
+        // Binary melt marker (1 if cell ever fully melted)
+        meltHistory = max(meltHistory, pos(T - Tl));
 
         while (simple.correctNonOrthogonal())
         {
             fvScalarMatrix TEqn(
-                rho * cp * fvm::ddt(T) 
-                - fvm::laplacian(k, T) 
-                == Q 
+                rho * cpEff * fvm::ddt(T)
+                - fvm::laplacian(k, T)
+                == Q
             );
 
             fvOptions.constrain(TEqn);
             TEqn.solve();
             fvOptions.correct(T);
-        }
-
-        // Update melt history
-        forAll(T, cellI)
-        {
-            if (T[cellI] > Tl)
-            {
-                meltHistory[cellI] = 1.0;
-            }
         }
 
         Info << "T after sol: " << max(T) << endl;

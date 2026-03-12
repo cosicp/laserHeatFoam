@@ -15,6 +15,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// Load user BC library so decomposePar can recognise pbfRadEvapTemperature
+libs ("$FOAM_USER_LIBBIN/libpbfRadEvapTemperature.dylib");
+
 numberOfSubdomains 10;
 
 method          simple;

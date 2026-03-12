@@ -32,7 +32,51 @@ boundaryField
 
     topWall
     {
-     	type		zeroGradient;
+        // Radiation + evaporation heat loss (Proell et al. 2023, eqs. 11-12)
+        type            pbfRadEvapTemperature;
+
+        // Thermal conductivity field name (must match createFields.H)
+        kappa           k;
+
+        // Ambient / far-field temperature [K]
+        Tinf            300;
+
+        // Optional convection coefficient [W/m2/K] - set 0 to disable
+        hConv           0;
+
+        // Surface emissivity [-]  (Ti-6Al-4V, ~0.3 typical)
+        epsilon         0.3;
+
+        // Boiling (evaporation onset) temperature [K]  (Ti boiling point)
+        Tv              3560;
+
+        // Temperature cap for evaporation flux: Tmax = Tv + 1000 K  (Proell 2023)
+        Tmax            4560;
+
+        // Enable/disable evaporation term
+        enableEvap      true;
+
+        // Recoil pressure factor: CP = 0.54 * pa  [Pa]
+        CP              54700;
+
+        // Recoil pressure temperature factor: CT = hv_molar / R_gas  [K]
+        // For Ti: (0.04787 kg/mol * 9.83e6 J/kg) / 8.314 J/mol/K = 56600 K
+        CT              56600;
+
+        // Heat-loss temperature factor: CM = M / (2*pi*R_gas)  [K s^2 m^-2]
+        // For Ti: 0.04787 / (2*pi*8.314) = 9.16e-4
+        CM              9.16e-4;
+
+        // Specific latent heat of evaporation [J/kg]  (Ti)
+        hv              9.83e6;
+
+        // Enthalpy reference temperature [K]
+        Th0             663;
+
+        // Specific heat used in evaporation enthalpy term [J/kg/K]
+        cpEvap          570;
+
+        value           uniform 300;
     }
 
     bottomWall
