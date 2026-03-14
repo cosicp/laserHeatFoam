@@ -123,9 +123,14 @@ int main(int argc, char *argv[])
         //   rm = fL        (melt fraction)
         //   rs = rc - fL   (solid fraction)
 
+        // Phase fractions (Proell 2020, eqs. 24-26):
+        rp = scalar(1) - rc;
+        rm = fL;
+        rs = rc - fL;
+
         // Phase-dependent thermal conductivity (Proell 2020, eq. 27):
         //   k = rp*kp + rm*km + rs*ks
-        k = (scalar(1) - rc)*kp + fL*km + (rc - fL)*ks;
+        k = rp*kp + rm*km + rs*ks;
 
         // Binary melt marker (1 if cell ever fully melted)
         meltHistory = max(meltHistory, pos(T - Tl));

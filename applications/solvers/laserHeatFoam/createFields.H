@@ -189,3 +189,24 @@ volScalarField fLold
     IOobject("fLold", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
     fL
 );
+
+volScalarField rp
+(
+    IOobject("rp", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
+
+volScalarField rm
+(
+    IOobject("rm", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
+
+volScalarField rs
+(
+    IOobject("rs", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
