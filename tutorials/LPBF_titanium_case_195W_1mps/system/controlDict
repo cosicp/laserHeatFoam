@@ -13,7 +13,11 @@ FoamFile
     object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-libs ("libsampling.so");
+libs
+(
+    "libsampling.dylib"
+    "$FOAM_USER_LIBBIN/libpbfRadEvapTemperature.dylib"
+);
 
 application     laplacianFoam;
 

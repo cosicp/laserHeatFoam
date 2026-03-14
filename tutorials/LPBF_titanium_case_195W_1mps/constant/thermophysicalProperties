@@ -21,18 +21,23 @@ rho             4100;
 // Specific heat [J/kg/K]
 Cp              570;
 
-// Thermal conductivity [W/m/K]
-kappa           6.7;
+// Phase-dependent thermal conductivity [W/m/K]
+// kp: powder  (low - highly porous)
+// ks: solid   (Ti-6Al-4V bulk)
+// km: melt    (liquid Ti, higher than solid)
+kp              0.2;
+ks              6.7;
+km              30.0;
 
 // Melting temperature [K]
-Tm               1878;
+Tm              Tm [0 0 0 1 0 0 0] 1878;
 
 // Temperature interval for latent heat smoothing [K]
 dT              100;
 
 // Optional: reference temperature
-TRef            300;
-Tinf            300;
+TRef            TRef [0 0 0 1 0 0 0] 300;
+Tinf            Tinf [0 0 0 1 0 0 0] 300;
 
 Tl             1928;
 Ts             1878;
