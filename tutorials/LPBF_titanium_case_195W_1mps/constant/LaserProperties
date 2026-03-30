@@ -37,7 +37,7 @@ timeVsLaserPower
 
 laserRadius 50e-6;   // rb
 absorptivity 0.5;      // A
-absorptionDepth 40e-6; // d
+absorptionDepth 30e-6; // d
 
 laserModel exponential;
 
