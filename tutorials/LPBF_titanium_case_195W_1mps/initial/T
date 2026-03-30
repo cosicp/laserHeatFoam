@@ -42,7 +42,7 @@ boundaryField
         Tinf            300;
 
         // Optional convection coefficient [W/m2/K] - set 0 to disable
-        hConv           0;
+        hConv           17;
 
         // Surface emissivity [-]  (Ti-6Al-4V, ~0.3 typical)
         epsilon         0.3;

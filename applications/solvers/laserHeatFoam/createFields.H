@@ -134,12 +134,26 @@ dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));
 
 // Phase-dependent conductivities (Proell 2020, eq. 5 / Proell 2023, eq. 5)
 // k = rp*kp + rm*km + rs*ks
+// kp: powder (constant - highly porous, low conductivity)
+// ks, km: temperature-dependent solid/melt conductivities (updated each timestep)
 const dimensionedScalar kp("kp", dimensionSet(1, 1, -3, -1, 0, 0, 0),
     readScalar(thermoDict.lookup("kp")));
-const dimensionedScalar ks("ks", dimensionSet(1, 1, -3, -1, 0, 0, 0),
-    readScalar(thermoDict.lookup("ks")));
-const dimensionedScalar km("km", dimensionSet(1, 1, -3, -1, 0, 0, 0),
-    readScalar(thermoDict.lookup("km")));
+
+volScalarField ks
+(
+    IOobject("ks", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
+    mesh,
+    dimensionedScalar("ks", dimensionSet(1, 1, -3, -1, 0, 0, 0),
+        readScalar(thermoDict.lookup("ks")))
+);
+
+volScalarField km
+(
+    IOobject("km", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
+    mesh,
+    dimensionedScalar("km", dimensionSet(1, 1, -3, -1, 0, 0, 0),
+        readScalar(thermoDict.lookup("km")))
+);
 
 // Consolidated fraction rc (Proell 2020, eq. 23):
 //   rc(0) = 1  for initially solid/substrate cells

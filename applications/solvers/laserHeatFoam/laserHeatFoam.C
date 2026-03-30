@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
         // Store previous liquid fraction (for post-processing / optional source-form)
         fLold = fL;
 
+        #include "updateThermo.H"
         #include "updateLaser.H"
         #include "DiffusionNo.H"
 

@@ -45,9 +45,36 @@ Ts             1878;
 // Latent heat for melting [J/kg]
 L               2.85e5;
 
-// Optional: make properties temperature-dependent (example)
-// Cp = table
-// kappa = table
-// But for now keep constant
+// Temperature-dependent property polynomial coefficients (Ti-6Al-4V)
+// Source: Mohammadkamal & Caiazzo (2025), Table 1
+//
+// Piecewise breakpoint temperature [K]
+T1              1268;
+//
+// rho [kg/m3]:  T < Tl  -> rho0s + rho1s*T
+//               T >= Tl -> rho0m + rho1m*T
+rho0s           4557.892;   // = 4512 - 0.154*(-298) = 4512 + 0.154*298
+rho1s           -0.154;
+rho0m           5227.640;   // = 3920 + 0.680*1923
+rho1m           -0.680;
+//
+// Cp [J/kg/K]:  T < T1       -> cp0a + cp1a*T
+//               T1 <= T < Tl -> cp0b + cp1b*T
+//               T >= Tl      -> cpL
+cp0a            483.04;
+cp1a            0.215;
+cp0b            412.70;
+cp1b            0.18;
+cpL             831.0;
+//
+// k solid/melt [W/m/K]:  T < T1       -> k0a + k1a*T
+//                         T1 <= T < Tl -> k0b + k1b*T
+//                         T >= Tl      -> k0m + k1m*T
+k0a             1.250;
+k1a             0.015;
+k0b             3.15;
+k1b             0.012;
+k0m             -12.752;
+k1m             0.024;
 
 // ************************************************************************* //
