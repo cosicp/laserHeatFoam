@@ -15,8 +15,7 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 libs
 (
-    "libsampling.dylib"
-    "$FOAM_USER_LIBBIN/libpbfRadEvapTemperature.dylib"
+    "/Users/cosicar/OpenFOAM/cosicar-v2506/platforms/darwin64ClangDPInt32Opt/lib/libpbfRadEvapTemperature.dylib"
 );
 
 application     laplacianFoam;

@@ -3,7 +3,6 @@
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
 #include "surfaceFields.H"
-// #include "mathematicalConstants.H"
 #include "physicoChemicalConstants.H"
 
 namespace Foam
@@ -11,14 +10,15 @@ namespace Foam
 
 defineTypeNameAndDebug(pbfRadEvapTemperatureFvPatchScalarField, 0);
 
-addToRunTimeSelectionTable
+addToPatchFieldRunTimeSelection
 (
     fvPatchScalarField,
-    pbfRadEvapTemperatureFvPatchScalarField,
-    dictionary  
+    pbfRadEvapTemperatureFvPatchScalarField
 );
 
-// * * * * * * * * * * Constructors  * * * * * * * * * * //
+
+// * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * * //
+
 pbfRadEvapTemperatureFvPatchScalarField::
 pbfRadEvapTemperatureFvPatchScalarField
 (
@@ -42,9 +42,53 @@ pbfRadEvapTemperatureFvPatchScalarField
     Th0_(663.0),
     cpEvap_(500.0)
 {
-    refValue() = scalarField(p.size(), Tinf_);
-    refGrad() = scalarField(p.size(), 0.0);
+    refValue()    = scalarField(p.size(), Tinf_);
+    refGrad()     = scalarField(p.size(), 0.0);
     valueFraction() = scalarField(p.size(), 0.0);
+}
+
+
+pbfRadEvapTemperatureFvPatchScalarField::
+pbfRadEvapTemperatureFvPatchScalarField
+(
+    const fvPatch& p,
+    const DimensionedField<scalar, volMesh>& iF,
+    const dictionary& dict
+)
+:
+    mixedFvPatchScalarField(p, iF),
+    kappaName_(dict.lookupOrDefault<word>("kappa", "kappaEff")),
+    Tinf_(readScalar(dict.lookup("Tinf"))),
+    hConv_(dict.lookupOrDefault<scalar>("hConv", 0.0)),
+    epsilon_(readScalar(dict.lookup("epsilon"))),
+    sigmaSB_
+    (
+        dict.lookupOrDefault<scalar>
+        (
+            "sigmaSB",
+            constant::physicoChemical::sigma.value()
+        )
+    ),
+    Tv_(readScalar(dict.lookup("Tv"))),
+    Tmax_(readScalar(dict.lookup("Tmax"))),
+    enableEvap_(dict.lookupOrDefault<Switch>("enableEvap", true)),
+    CP_(readScalar(dict.lookup("CP"))),
+    CT_(readScalar(dict.lookup("CT"))),
+    CM_(readScalar(dict.lookup("CM"))),
+    hv_(readScalar(dict.lookup("hv"))),
+    Th0_(readScalar(dict.lookup("Th0"))),
+    cpEvap_(readScalar(dict.lookup("cpEvap")))
+{
+    refValue()      = scalarField(p.size(), Tinf_);
+    refGrad()       = scalarField(p.size(), 0.0);
+    valueFraction() = scalarField(p.size(), 0.0);
+
+    fvPatchScalarField::operator=
+    (
+        scalarField("value", dict, p.size())
+    );
+
+    Info<< "*** pbfRadEvapTemperature BC loaded successfully ***" << endl;
 }
 
 
@@ -124,46 +168,7 @@ pbfRadEvapTemperatureFvPatchScalarField
 {}
 
 
-pbfRadEvapTemperatureFvPatchScalarField::
-pbfRadEvapTemperatureFvPatchScalarField
-(
-    const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
-    const dictionary& dict
-)
-:
-    mixedFvPatchScalarField(p, iF),
-    kappaName_(dict.lookupOrDefault<word>("kappa", "kappaEff")),
-    Tinf_(readScalar(dict.lookup("Tinf"))),
-    hConv_(dict.lookupOrDefault<scalar>("hConv", 0.0)),
-    epsilon_(readScalar(dict.lookup("epsilon"))),
-    sigmaSB_(dict.lookupOrDefault<scalar>
-    (
-        "sigmaSB",
-        constant::physicoChemical::sigma.value()
-    )),
-    Tv_(readScalar(dict.lookup("Tv"))),
-    Tmax_(readScalar(dict.lookup("Tmax"))),
-    enableEvap_(dict.lookupOrDefault<Switch>("enableEvap", true)),
-    CP_(readScalar(dict.lookup("CP"))),
-    CT_(readScalar(dict.lookup("CT"))),
-    CM_(readScalar(dict.lookup("CM"))),
-    hv_(readScalar(dict.lookup("hv"))),
-    Th0_(readScalar(dict.lookup("Th0"))),
-    cpEvap_(readScalar(dict.lookup("cpEvap")))
-{
-    refValue() = scalarField(p.size(), Tinf_);
-    refGrad() = scalarField(p.size(), 0.0);
-    valueFraction() = scalarField(p.size(), 0.0);
-
-    fvPatchScalarField::operator=
-    (
-        scalarField("value", dict, p.size())
-    );
-}
-
-
-// * * * * * * * * * * Member Functions  * * * * * * * * * * //
+// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void pbfRadEvapTemperatureFvPatchScalarField::updateCoeffs()
 {
@@ -173,27 +178,31 @@ void pbfRadEvapTemperatureFvPatchScalarField::updateCoeffs()
     }
 
     const fvPatchScalarField& Tp =
-        patch().lookupPatchField<volScalarField, scalar>(internalField().name());
+        patch().lookupPatchField<volScalarField, scalar>
+        (
+            internalField().name()
+        );
 
     const fvPatchScalarField& kappap =
         patch().lookupPatchField<volScalarField, scalar>(kappaName_);
 
     scalarField& rGrad = refGrad();
     scalarField& vFrac = valueFraction();
-    scalarField& rVal = refValue();
+    scalarField& rVal  = refValue();
 
     forAll(Tp, faceI)
     {
         const scalar Tw = Tp[faceI];
         const scalar Tc = min(Tw, Tmax_);
 
-        const scalar qRad =
-            epsilon_*sigmaSB_*(pow4(Tw) - pow4(Tinf_));
+        // Radiation
+        const scalar qRad = epsilon_*sigmaSB_*(pow4(Tw) - pow4(Tinf_));
 
+        // Convection
         const scalar qConv = hConv_*(Tw - Tinf_);
 
+        // Evaporation
         scalar qEvap = 0.0;
-
         if (enableEvap_ && Tc > Tv_)
         {
             const scalar mdot =
@@ -206,11 +215,9 @@ void pbfRadEvapTemperatureFvPatchScalarField::updateCoeffs()
 
         const scalar qTot = qRad + qConv + qEvap;
 
-        // Mixed BC used in pure gradient mode:
-        //   valueFraction = 0  => gradient condition
-        //   -k dT/dn = qTot  => dT/dn = -qTot/k
+        // Pure gradient mode: valueFraction = 0 => -k dT/dn = qTot
         rGrad[faceI] = -qTot/max(kappap[faceI], SMALL);
-        rVal[faceI] = Tinf_;
+        rVal[faceI]  = Tinf_;
         vFrac[faceI] = 0.0;
     }
 
@@ -222,20 +229,20 @@ void pbfRadEvapTemperatureFvPatchScalarField::write(Ostream& os) const
 {
     fvPatchScalarField::write(os);
 
-    os.writeEntry("kappa", kappaName_);
-    os.writeEntry("Tinf", Tinf_);
-    os.writeEntry("hConv", hConv_);
-    os.writeEntry("epsilon", epsilon_);
-    os.writeEntry("sigmaSB", sigmaSB_);
-    os.writeEntry("Tv", Tv_);
-    os.writeEntry("Tmax", Tmax_);
+    os.writeEntry("kappa",      kappaName_);
+    os.writeEntry("Tinf",       Tinf_);
+    os.writeEntry("hConv",      hConv_);
+    os.writeEntry("epsilon",    epsilon_);
+    os.writeEntry("sigmaSB",    sigmaSB_);
+    os.writeEntry("Tv",         Tv_);
+    os.writeEntry("Tmax",       Tmax_);
     os.writeEntry("enableEvap", enableEvap_);
-    os.writeEntry("CP", CP_);
-    os.writeEntry("CT", CT_);
-    os.writeEntry("CM", CM_);
-    os.writeEntry("hv", hv_);
-    os.writeEntry("Th0", Th0_);
-    os.writeEntry("cpEvap", cpEvap_);
+    os.writeEntry("CP",         CP_);
+    os.writeEntry("CT",         CT_);
+    os.writeEntry("CM",         CM_);
+    os.writeEntry("hv",         hv_);
+    os.writeEntry("Th0",        Th0_);
+    os.writeEntry("cpEvap",     cpEvap_);
 
     writeEntry("value", os);
 }

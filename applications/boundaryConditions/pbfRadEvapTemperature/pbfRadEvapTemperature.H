@@ -16,43 +16,43 @@ class pbfRadEvapTemperatureFvPatchScalarField
     //- Name of conductivity field
     word kappaName_;
 
-    //- Ambient temperature
+    //- Ambient temperature [K]
     scalar Tinf_;
 
     //- Optional convection coefficient [W/m2/K]
     scalar hConv_;
 
-    //- Emissivity
+    //- Emissivity [-]
     scalar epsilon_;
 
-    //- Stefan-Boltzmann constant
+    //- Stefan-Boltzmann constant [W/m2/K4]
     scalar sigmaSB_;
 
-    //- Boiling temperature
+    //- Boiling/evaporation onset temperature [K]
     scalar Tv_;
 
-    //- Temperature clip for evaporation law
+    //- Temperature clip for evaporation law [K]
     scalar Tmax_;
 
-    //- Enable evaporation term
+    //- Enable evaporation heat loss term
     Switch enableEvap_;
 
-    //- Recoil pressure factor
+    //- Pre-exponential pressure factor [Pa]
     scalar CP_;
 
-    //- Recoil pressure temperature factor
+    //- Exponential temperature factor [K]
     scalar CT_;
 
-    //- Heat loss temperature factor
+    //- Molecular mass factor [kg/mol]
     scalar CM_;
 
-    //- Latent heat of evaporation
+    //- Latent heat of evaporation [J/kg]
     scalar hv_;
 
-    //- Enthalpy reference temperature
+    //- Enthalpy reference temperature [K]
     scalar Th0_;
 
-    //- Specific heat used inside qEvap enthalpy term
+    //- Specific heat inside qEvap enthalpy term [J/kg/K]
     scalar cpEvap_;
 
 
