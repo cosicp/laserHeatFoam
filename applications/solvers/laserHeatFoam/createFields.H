@@ -167,11 +167,10 @@ volScalarField rc
         "rc",
         runTime.timeName(),
         mesh,
-        IOobject::READ_IF_PRESENT,
+        IOobject::MUST_READ,
         IOobject::AUTO_WRITE
     ),
-    mesh,
-    dimensionedScalar("zero", dimless, 0.0)
+    mesh
 );
 
 const dictionary& controlDict = runTime.controlDict();

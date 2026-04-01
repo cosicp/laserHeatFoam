@@ -25,6 +25,9 @@
     const scalar T1val  = thermoDict.lookupOrDefault<scalar>("T1",    1268.0);
     const scalar Tlval  = Tl.value();   // liquidus [K]
 
+    // Powder porosity (Mohammadkamal eq. 1)
+    const scalar phiVal = thermoDict.lookupOrDefault<scalar>("phi", 0.35);
+
     // rho coefficients
     const scalar rho0s = thermoDict.lookupOrDefault<scalar>("rho0s",  4557.892);
     const scalar rho1s = thermoDict.lookupOrDefault<scalar>("rho1s",    -0.154);
@@ -50,10 +53,14 @@
     {
         const scalar Tc = T[cellI];
 
-        // Density
-        rho[cellI] = (Tc < Tlval)
+        // Solid/melt density, then scale by powder porosity:
+        // rho_eff = rho_solid * (1 - phi*rp)
+        // rp=1 (pure powder) -> rho_eff = (1-phi)*rho_solid
+        // rp=0 (solid/melt)  -> rho_eff = rho_solid
+        const scalar rhoSolid = (Tc < Tlval)
             ? rho0s + rho1s*Tc
             : rho0m + rho1m*Tc;
+        rho[cellI] = rhoSolid * (1.0 - phiVal * rp[cellI]);
 
         // Specific heat
         cp[cellI] = (Tc < T1val)  ? cp0a + cp1a*Tc

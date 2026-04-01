@@ -18,11 +18,10 @@ regions
 (
     boxToCell
     {
-        box (0 0 200e-6) (200e-6 800e-6 400e-6);
-
+        box (0 0 270e-6) (240e-6 780e-6 300e-6);  // top 30µm
         fieldValues
         (
-            volScalarFieldValue rho 1.6337
+            volScalarFieldValue rc   0.0
         );
     }
 );

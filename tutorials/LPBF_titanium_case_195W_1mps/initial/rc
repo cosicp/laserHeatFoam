@@ -9,47 +9,45 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    object      controlDict;
+    class       volScalarField;
+    object      rc;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-libs
-(
-    "libpbfRadEvapTemperature.dylib"
-);
 
-application     laplacianFoam;
+dimensions      [0 0 0 0 0 0 0];
 
-startFrom       startTime;
+internalField   uniform 1;
 
-startTime       0;
+boundaryField
+{
+    leftWall
+    {
+      type		zeroGradient;
+    }
+    rightWall
+    {
+      type		zeroGradient;
+    }
+    topWall
+    {
+    type		zeroGradient;
+      }
+    bottomWall
+    {
+	type		zeroGradient;
+    }
+    front
+    {
+	type		zeroGradient;
+    }
+    back
+    {
+      type		zeroGradient;
+    }
+    solidInterface
+    {
+      type		zeroGradient;
+    }
+}
 
-stopAt          endTime;
-
-endTime         130e-5;
-
-deltaT          2e-7;
-
-writeControl    runTime;
-
-writeInterval   1e-5;
-
-purgeWrite      0;
-
-writeFormat     ascii;
-
-writePrecision  6;
-
-writeCompression off;
-
-timeFormat      general;
-
-timePrecision   6;
-
-runTimeModifiable true;
-
-adjustTimeStep  yes;
-
-maxDeltaT       1e-6;     // whatever upper bound you allow
-maxDi           0.5;      // typical 0.1–1.0 (smaller = more conservative)
 // ************************************************************************* //

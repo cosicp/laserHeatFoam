@@ -45,6 +45,9 @@ Ts             1878;
 // Latent heat for melting [J/kg]
 L               2.85e5;
 
+// Initial powder porosity [-] (Mohammadkamal eq. 1: rho_eff = (1-phi)*rho_solid)
+phi             0.35;
+
 // Temperature-dependent property polynomial coefficients (Ti-6Al-4V)
 // Source: Mohammadkamal & Caiazzo (2025), Table 1
 //

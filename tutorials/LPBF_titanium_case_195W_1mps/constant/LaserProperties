@@ -39,7 +39,7 @@ laserRadius 50e-6;   // rb
 absorptivity 0.5;      // A
 absorptionDepth 30e-6; // d
 
-laserModel exponential;
+// laserModel exponential;
 
 // If you have (or can get) single-track cross-sections (melt pool width/depth) for your material + machine settings:
 // Fix rb from your beam characterization.
