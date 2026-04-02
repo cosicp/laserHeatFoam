@@ -18,7 +18,7 @@ regions
 (
     boxToCell
     {
-        box (0 0 270e-6) (240e-6 780e-6 300e-6);  // top 30µm
+        box (0 0 265e-6) (240e-6 780e-6 300e-6);  // top 30µm
         fieldValues
         (
             volScalarFieldValue rc   0.0
