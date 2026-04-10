@@ -1,6 +1,6 @@
 # laserHeatFoam
 
-An OpenFOAM solver for thermal simulation of **Laser Powder Bed Fusion (LPBF / PBF-LB)** additive manufacturing processes. The solver resolves the moving laser heat source, phase-dependent material properties, latent heat of fusion, and physically consistent surface boundary conditions including radiation and evaporation.
+An OpenFOAM solver for thermal simulation of **Laser Powder Bed Fusion (L-PBF)** additive manufacturing processes. The solver resolves the moving laser heat source, phase-dependent material properties, latent heat of fusion, and physically consistent surface boundary conditions including radiation, conduction and evaporation.
 
 The physical and numerical models are based on:
 
@@ -30,7 +30,7 @@ The physical and numerical models are based on:
 
 The solver solves the **transient heat conduction equation** with a volumetric source term:
 
-$$\rho \, c_p^{\text{eff}} \frac{\partial T}{\partial t} = \nabla \cdot \left( k \, \nabla T \right) + Q$$
+$$\rho \c_p^{\text{eff}} \frac{\partial T}{\partial t} = \nabla \cdot \left( k \, \nabla T \right) + Q$$
 
 | Symbol | Description | Units |
 |--------|-------------|-------|
@@ -49,13 +49,13 @@ fvScalarMatrix TEqn
 );
 ```
 
-The spatial discretization uses a standard finite-volume Galerkin approach on an unstructured mesh. Time integration uses the implicit Euler scheme (backward differencing), which is unconditionally stable and suitable for the diffusion-dominated problem.
+The spatial discretization uses a standard finite-volume approach on an unstructured mesh. Time integration uses the implicit Euler scheme (backward differencing), which is unconditionally stable and suitable for the diffusion-dominated problem.
 
 ---
 
 ## 2. Volumetric Heat Source Models
 
-The laser is represented as a **moving volumetric heat source** with a Gaussian radial profile. The laser position and power are prescribed as time series in `constant/timeVsLaserPosition` and `constant/timeVsLaserPower`, allowing arbitrary scan paths and pulsed-wave operation.
+The laser is represented as a **moving volumetric heat source** with a Gaussian radial profile. The laser position and power are prescribed as time series in `constant/timeVsLaserPosition` and `constant/timeVsLaserPower`, allowing arbitrary scan paths and continuous or pulsed-wave operation.
 
 Two depth profiles are available via the `laserModel` keyword in `constant/LaserProperties`.
 
@@ -63,7 +63,7 @@ Two depth profiles are available via the `laserModel` keyword in `constant/Laser
 
 Based on Proell et al. (2023), eq. (6), and Mohammadkamal & Caiazzo (2025), eq. (4):
 
-$$Q(\hat{x}, \hat{y}, \hat{z}) = \frac{2 \, A \, P_{\text{eff}}}{\pi \, R^2 \, d} \exp\!\left( -\frac{2(\hat{x}^2 + \hat{y}^2)}{R^2} \right), \quad \text{if } z_{\text{layer}} - d < z < z_{\text{layer}}$$
+$$Q(\hat{x}, \hat{y}, \hat{z}) = \frac{2 \, A \, P_{\text{eff}}}{\pi \, R^2 \, d} \exp\left( -\frac{2(\hat{x}^2 + \hat{y}^2)}{R^2} \right), \quad \text{if } z_{\text{layer}} - d < z < z_{\text{layer}}$$
 
 The source is **uniform in depth** within a cylinder of depth $d$ below the laser surface position $z_{\text{layer}}$, and zero elsewhere.
 
@@ -71,7 +71,7 @@ The source is **uniform in depth** within a cylinder of depth $d$ below the lase
 
 An alternative model with **Beer–Lambert exponential attenuation** in the $z$-direction:
 
-$$Q(\hat{x}, \hat{y}, z) = \frac{2 \, A \, P_{\text{eff}}}{\pi \, R^2 \, d} \exp\!\left( -\frac{2(\hat{x}^2 + \hat{y}^2)}{R^2} \right) \exp\!\left( -\frac{z_{\text{layer}} - z}{d} \right), \quad z < z_{\text{layer}}$$
+$$Q(\hat{x}, \hat{y}, z) = \frac{2 \, A \, P_{\text{eff}}}{\pi \, R^2 \, d} \exp\left( -\frac{2(\hat{x}^2 + \hat{y}^2)}{R^2} \right) \exp\left( -\frac{z_{\text{layer}} - z}{d} \right), \quad z < z_{\text{layer}}$$
 
 This is better suited when the laser penetration depth follows an exponential decay law (e.g., for semi-transparent or highly scattering powder beds).
 
