@@ -30,7 +30,7 @@ The physical and numerical models are based on:
 
 The solver solves the **transient heat conduction equation** with a volumetric source term:
 
-$$\rho c_{p}^{\text{eff}} \frac{\partial T}{\partial t} = \nabla \cdot \left( k \, \nabla T \right) + Q$$
+$$\rho c_{p}^{\text{eff}} \frac{\partial T}{\partial t} = \nabla \cdot \left( k \nabla T \right) + Q$$
 
 | Symbol | Description | Units |
 |--------|-------------|-------|
@@ -135,7 +135,7 @@ rc = max(rc, fL);   // monotonically non-decreasing
 
 Following Proell et al. (2023), eq. (5), the thermal conductivity is computed as a weighted average over the three material phases:
 
-$$k(T, r_c) = r_p \, k_p + r_m \, k_m + r_s \, k_s$$
+$$k(T, r_c) = r_p(r_c)k_p + r_m(T)k_m + r_s(T,r_c)k_s$$
 
 where the phase fractions (Proell 2023, eqs. 4) are:
 
@@ -224,7 +224,7 @@ $$-k \frac{\partial T}{\partial n} \bigg|_{\text{top}} = q_{\text{tot}}$$
 
 #### Radiation (Proell 2023, eq. 11; Mohammadkamal eq. 10)
 
-$$q_{\text{rad}} = \varepsilon \, \sigma_{\text{SB}} \left( T_w^4 - T_\infty^4 \right)$$
+$$q_{\text{rad}} = \varepsilon \sigma_{\text{SB}} \left( T_w^4 - T_\infty^4 \right)$$
 
 | Symbol | Description |
 |--------|-------------|
@@ -245,7 +245,7 @@ When the surface temperature exceeds the boiling point $T_v$, significant heat i
 
 The evaporative mass flux is:
 
-$$\dot{m} = 0.82 \, C_P \exp\!\left[ -C_T \left( \frac{1}{[T]} - \frac{1}{T_v} \right) \right] \sqrt{\frac{C_M}{[T]}}$$
+$$\dot{m} = 0.82 \, C_P \exp\left[ -C_T \left( \frac{1}{[T]} - \frac{1}{T_v} \right) \right] \sqrt{\frac{C_M}{[T]}}$$
 
 and the evaporation heat flux is:
 
