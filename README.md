@@ -30,7 +30,7 @@ The physical and numerical models are based on:
 
 The solver solves the **transient heat conduction equation** with a volumetric source term:
 
-$$\rho \c_p^{\text{eff}} \frac{\partial T}{\partial t} = \nabla \cdot \left( k \, \nabla T \right) + Q$$
+$$\rho c_{p}^{\text{eff}} \frac{\partial T}{\partial t} = \nabla \cdot \left( k \, \nabla T \right) + Q$$
 
 | Symbol | Description | Units |
 |--------|-------------|-------|
