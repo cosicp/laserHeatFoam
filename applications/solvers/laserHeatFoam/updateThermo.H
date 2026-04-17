@@ -1,8 +1,7 @@
-// updateThermo.H
-// Update temperature-dependent thermophysical properties each timestep.
+// Update temperature-dependent thermophysical properties.
 //
 // Piecewise polynomial fits for Ti-6Al-4V from:
-//   Mohammadkamal & Caiazzo (2025), Table 1  [Paper 1]
+//   Mohammadkamal and Caiazzo (2025), Table 1
 //
 // rho [kg/m3]:
 //   T < Tl  : rho0s + rho1s * T
@@ -20,61 +19,29 @@
 //
 // kp (powder) remains constant.
 
+forAll(T, cellI)
 {
-    // Breakpoint and liquidus temperatures
-    const scalar T1val  = thermoDict.lookupOrDefault<scalar>("T1",    1268.0);
-    const scalar Tlval  = Tl.value();   // liquidus [K]
+    const scalar Tc = T[cellI];
 
-    // Powder porosity (Mohammadkamal eq. 1)
-    const scalar phiVal = thermoDict.lookupOrDefault<scalar>("phi", 0.35);
+    // Density is evaluated for solid/melt material, then reduced in cells
+    // that still contain unconsolidated powder.
+    const scalar rhoSolid = (Tc < Tlval)
+        ? rho0s + rho1s*Tc
+        : rho0m + rho1m*Tc;
+    rho[cellI] = rhoSolid*(1.0 - phiVal*rp[cellI]);
 
-    // rho coefficients
-    const scalar rho0s = thermoDict.lookupOrDefault<scalar>("rho0s",  4557.892);
-    const scalar rho1s = thermoDict.lookupOrDefault<scalar>("rho1s",    -0.154);
-    const scalar rho0m = thermoDict.lookupOrDefault<scalar>("rho0m",  5227.640);
-    const scalar rho1m = thermoDict.lookupOrDefault<scalar>("rho1m",    -0.680);
+    // Specific heat.
+    cp[cellI] = (Tc < T1val)  ? cp0a + cp1a*Tc
+              : (Tc < Tlval)  ? cp0b + cp1b*Tc
+              : cpL;
 
-    // cp coefficients
-    const scalar cp0a  = thermoDict.lookupOrDefault<scalar>("cp0a",   483.04);
-    const scalar cp1a  = thermoDict.lookupOrDefault<scalar>("cp1a",     0.215);
-    const scalar cp0b  = thermoDict.lookupOrDefault<scalar>("cp0b",   412.70);
-    const scalar cp1b  = thermoDict.lookupOrDefault<scalar>("cp1b",     0.18);
-    const scalar cpL   = thermoDict.lookupOrDefault<scalar>("cpL",    831.0);
+    // Solid and melt conductivities are stored separately so the phase
+    // fraction update can form k = rp*kp + rm*km + rs*ks.
+    ks[cellI] = (Tc < T1val)  ? k0a + k1a*Tc
+              : (Tc < Tlval)  ? k0b + k1b*Tc
+              : k0m + k1m*Tc;
 
-    // k (solid/melt) coefficients
-    const scalar k0a   = thermoDict.lookupOrDefault<scalar>("k0a",     1.250);
-    const scalar k1a   = thermoDict.lookupOrDefault<scalar>("k1a",     0.015);
-    const scalar k0b   = thermoDict.lookupOrDefault<scalar>("k0b",     3.15);
-    const scalar k1b   = thermoDict.lookupOrDefault<scalar>("k1b",     0.012);
-    const scalar k0m   = thermoDict.lookupOrDefault<scalar>("k0m",   -12.752);
-    const scalar k1m   = thermoDict.lookupOrDefault<scalar>("k1m",     0.024);
-
-    forAll(T, cellI)
-    {
-        const scalar Tc = T[cellI];
-
-        // Solid/melt density, then scale by powder porosity:
-        // rho_eff = rho_solid * (1 - phi*rp)
-        // rp=1 (pure powder) -> rho_eff = (1-phi)*rho_solid
-        // rp=0 (solid/melt)  -> rho_eff = rho_solid
-        const scalar rhoSolid = (Tc < Tlval)
-            ? rho0s + rho1s*Tc
-            : rho0m + rho1m*Tc;
-        rho[cellI] = rhoSolid * (1.0 - phiVal * rp[cellI]);
-
-        // Specific heat
-        cp[cellI] = (Tc < T1val)  ? cp0a + cp1a*Tc
-                  : (Tc < Tlval)  ? cp0b + cp1b*Tc
-                  : cpL;
-
-        // Solid-phase conductivity (used weighted by rs in mushy zone)
-        ks[cellI] = (Tc < T1val)  ? k0a + k1a*Tc
-                  : (Tc < Tlval)  ? k0b + k1b*Tc
-                  : k0m + k1m*Tc;
-
-        // Melt-phase conductivity (used weighted by rm above solidus)
-        km[cellI] = (Tc < T1val)  ? k0a + k1a*Tc
-                  : (Tc < Tlval)  ? k0b + k1b*Tc
-                  : k0m + k1m*Tc;
-    }
+    km[cellI] = (Tc < T1val)  ? k0a + k1a*Tc
+              : (Tc < Tlval)  ? k0b + k1b*Tc
+              : k0m + k1m*Tc;
 }

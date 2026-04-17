@@ -1,5 +1,6 @@
 Info<< "Reading field T\n" << endl;
 
+// Primary solution field.
 volScalarField T
 (
     IOobject
@@ -13,8 +14,7 @@ volScalarField T
     mesh
 );
 
-// k is computed from phase fractions every time step.
-// Dimension: thermal conductivity [W/(m·K)] = [kg m s^-3 K^-1]
+// Effective thermal conductivity, rebuilt from phase fractions each time step.
 volScalarField k
 (
     IOobject
@@ -29,6 +29,7 @@ volScalarField k
     dimensionedScalar("k", dimensionSet(1, 1, -3, -1, 0, 0, 0), 0.0)
 );
 
+// Cell marker for material that has reached the liquidus at least once.
 volScalarField meltHistory
 (
     IOobject
@@ -45,6 +46,7 @@ volScalarField meltHistory
 
 #include "createFvOptions.H"
 
+// Thermophysical fields read from the case and updated during the run.
 volScalarField rho
 (
     IOobject
@@ -73,10 +75,18 @@ volScalarField cp
 
 volScalarField cpEff
 (
-    IOobject("cpEff", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    IOobject
+    (
+        "cpEff",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
     cp
 );
 
+// Volumetric laser source [W/m3].
 volScalarField Q
 (
     IOobject
@@ -90,20 +100,32 @@ volScalarField Q
     mesh
 );
 
-IOdictionary LaserProperties(
-    IOobject(
+// Laser model selection, scan path, and power history.
+IOdictionary LaserProperties
+(
+    IOobject
+    (
         "LaserProperties",
         mesh.time().constant(),
         mesh,
         IOobject::MUST_READ,
-        IOobject::NO_WRITE));
+        IOobject::NO_WRITE
+    )
+);
 
-// scalar P (readScalar(LaserProperties.lookup("power")));
-[[maybe_unused]] scalar A (readScalar(LaserProperties.lookup("absorptivity")));
-[[maybe_unused]] scalar rb(readScalar(LaserProperties.lookup("laserRadius")));
-[[maybe_unused]] scalar d (readScalar(LaserProperties.lookup("absorptionDepth")));
+word laserModel
+(
+    LaserProperties.lookupOrDefault<word>("laserModel", "cylindrical")
+);
 
-word laserModel(LaserProperties.lookupOrDefault<word>("laserModel", "cylindrical"));
+[[maybe_unused]] const scalar substrateProbeDepth
+(
+    LaserProperties.lookupOrDefault<scalar>
+    (
+        "substrateProbeDepth",
+        LaserProperties.lookupOrDefault<scalar>("absorptionDepth", 0.0)
+    )
+);
 
 interpolationTable<scalar> laserPowerSeries
 (
@@ -115,6 +137,7 @@ interpolationTable<vector> laserPositionSeries
     LaserProperties.subDict("timeVsLaserPosition")
 );
 
+// Material properties and coefficients.
 IOdictionary thermoDict
 (
     IOobject
@@ -129,37 +152,105 @@ IOdictionary thermoDict
 
 dimensionedScalar Ts("Ts", dimTemperature, readScalar(thermoDict.lookup("Ts")));
 dimensionedScalar Tl("Tl", dimTemperature, readScalar(thermoDict.lookup("Tl")));
-dimensionedScalar Tinf("Tinf", dimTemperature, 300);   // K
-dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));   // J/kg
+dimensionedScalar L("L", dimEnergy/dimMass, readScalar(thermoDict.lookup("L")));
 
-// Phase-dependent conductivities (Proell 2020, eq. 5 / Proell 2023, eq. 5)
-// k = rp*kp + rm*km + rs*ks
-// kp: powder (constant - highly porous, low conductivity)
-// ks, km: temperature-dependent solid/melt conductivities (updated each timestep)
-const dimensionedScalar kp("kp", dimensionSet(1, 1, -3, -1, 0, 0, 0),
-    readScalar(thermoDict.lookup("kp")));
+// Temperature-dependent property model coefficients.
+[[maybe_unused]] const scalar T1val =
+    thermoDict.lookupOrDefault<scalar>("T1", 1268.0);
+[[maybe_unused]] const scalar Tlval = Tl.value();
+
+// Powder porosity (Mohammadkamal eq. 1).
+[[maybe_unused]] const scalar phiVal =
+    thermoDict.lookupOrDefault<scalar>("phi", 0.35);
+
+// Density coefficients.
+[[maybe_unused]] const scalar rho0s =
+    thermoDict.lookupOrDefault<scalar>("rho0s", 4557.892);
+[[maybe_unused]] const scalar rho1s =
+    thermoDict.lookupOrDefault<scalar>("rho1s", -0.154);
+[[maybe_unused]] const scalar rho0m =
+    thermoDict.lookupOrDefault<scalar>("rho0m", 5227.640);
+[[maybe_unused]] const scalar rho1m =
+    thermoDict.lookupOrDefault<scalar>("rho1m", -0.680);
+
+// Specific heat coefficients.
+[[maybe_unused]] const scalar cp0a =
+    thermoDict.lookupOrDefault<scalar>("cp0a", 483.04);
+[[maybe_unused]] const scalar cp1a =
+    thermoDict.lookupOrDefault<scalar>("cp1a", 0.215);
+[[maybe_unused]] const scalar cp0b =
+    thermoDict.lookupOrDefault<scalar>("cp0b", 412.70);
+[[maybe_unused]] const scalar cp1b =
+    thermoDict.lookupOrDefault<scalar>("cp1b", 0.18);
+[[maybe_unused]] const scalar cpL =
+    thermoDict.lookupOrDefault<scalar>("cpL", 831.0);
+
+// Solid/melt conductivity coefficients.
+[[maybe_unused]] const scalar k0a =
+    thermoDict.lookupOrDefault<scalar>("k0a", 1.250);
+[[maybe_unused]] const scalar k1a =
+    thermoDict.lookupOrDefault<scalar>("k1a", 0.015);
+[[maybe_unused]] const scalar k0b =
+    thermoDict.lookupOrDefault<scalar>("k0b", 3.15);
+[[maybe_unused]] const scalar k1b =
+    thermoDict.lookupOrDefault<scalar>("k1b", 0.012);
+[[maybe_unused]] const scalar k0m =
+    thermoDict.lookupOrDefault<scalar>("k0m", -12.752);
+[[maybe_unused]] const scalar k1m =
+    thermoDict.lookupOrDefault<scalar>("k1m", 0.024);
+
+// Phase-dependent conductivity model:
+//   k = rp*kp + rm*km + rs*ks
+// where kp is a constant powder conductivity and ks/km are updated with T.
+const dimensionedScalar kp
+(
+    "kp",
+    dimensionSet(1, 1, -3, -1, 0, 0, 0),
+    readScalar(thermoDict.lookup("kp"))
+);
 
 volScalarField ks
 (
-    IOobject("ks", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
+    IOobject
+    (
+        "ks",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
     mesh,
-    dimensionedScalar("ks", dimensionSet(1, 1, -3, -1, 0, 0, 0),
-        readScalar(thermoDict.lookup("ks")))
+    dimensionedScalar
+    (
+        "ks",
+        dimensionSet(1, 1, -3, -1, 0, 0, 0),
+        readScalar(thermoDict.lookup("ks"))
+    )
 );
 
 volScalarField km
 (
-    IOobject("km", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
+    IOobject
+    (
+        "km",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
     mesh,
-    dimensionedScalar("km", dimensionSet(1, 1, -3, -1, 0, 0, 0),
-        readScalar(thermoDict.lookup("km")))
+    dimensionedScalar
+    (
+        "km",
+        dimensionSet(1, 1, -3, -1, 0, 0, 0),
+        readScalar(thermoDict.lookup("km"))
+    )
 );
 
-// Consolidated fraction rc (Proell 2020, eq. 23):
-//   rc(0) = 1  for initially solid/substrate cells
-//   rc(0) = 0  for initially powder cells
-// rc can only increase (irreversible powder->melt transition).
-// Initialize from file if present; default = 0 (all powder).
+// Consolidated fraction rc:
+//   rc = 1  for consolidated solid/substrate
+//   rc = 0  for unconsolidated powder
+// rc only increases, giving an irreversible powder-to-melt transition.
 volScalarField rc
 (
     IOobject
@@ -175,6 +266,8 @@ volScalarField rc
 
 const dictionary& controlDict = runTime.controlDict();
 
+// Explicit diffusion-number control. These are marked maybe_unused because
+// postProcess.H also includes createFields.H without entering the time loop.
 [[maybe_unused]] Switch adjustTimeStep
 (
     controlDict.lookupOrDefault<Switch>("adjustTimeStep", false)
@@ -190,36 +283,72 @@ const dictionary& controlDict = runTime.controlDict();
     controlDict.lookupOrDefault<scalar>("maxDi", 0.2)
 );
 
+// Phase fraction fields.
 volScalarField fL
 (
-    IOobject("fL", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    IOobject
+    (
+        "fL",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
     mesh,
     dimensionedScalar("zero", dimless, 0.0)
 );
 
 volScalarField fLold
 (
-    IOobject("fLold", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::NO_WRITE),
+    IOobject
+    (
+        "fLold",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
     fL
 );
 
 volScalarField rp
 (
-    IOobject("rp", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    IOobject
+    (
+        "rp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
     mesh,
     dimensionedScalar("zero", dimless, 0.0)
 );
 
 volScalarField rm
 (
-    IOobject("rm", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    IOobject
+    (
+        "rm",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
     mesh,
     dimensionedScalar("zero", dimless, 0.0)
 );
 
 volScalarField rs
 (
-    IOobject("rs", runTime.timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE),
+    IOobject
+    (
+        "rs",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
     mesh,
     dimensionedScalar("zero", dimless, 0.0)
 );

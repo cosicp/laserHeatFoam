@@ -16,22 +16,22 @@ class pbfRadEvapTemperatureFvPatchScalarField
     //- Name of conductivity field
     word kappaName_;
 
-    //- Ambient temperature [K]
+    //- Ambient temperature [K], read from thermophysicalProperties
     scalar Tinf_;
 
-    //- Optional convection coefficient [W/m2/K]
+    //- Optional convection coefficient [W/m2/K], read from thermophysicalProperties
     scalar hConv_;
 
-    //- Emissivity [-]
+    //- Emissivity [-], read from thermophysicalProperties
     scalar epsilon_;
 
     //- Stefan-Boltzmann constant [W/m2/K4]
     scalar sigmaSB_;
 
-    //- Boiling/evaporation onset temperature [K]
+    //- Boiling/evaporation onset temperature [K], read from thermophysicalProperties
     scalar Tv_;
 
-    //- Temperature clip for evaporation law [K]
+    //- Temperature clip for evaporation law [K], read from thermophysicalProperties
     scalar Tmax_;
 
     //- Enable evaporation heat loss term

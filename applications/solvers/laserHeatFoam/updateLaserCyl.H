@@ -1,24 +1,31 @@
-// --- LPBF parameters ---
-// --- Compute current laser position ---
+Info<< "Updating laser\n" << endl;
 
-Info << "Updating laser\n" << endl;
+// Legacy cylindrical Gaussian source fragment. The unified updateLaser.H
+// handles this model in normal solver runs.
+const scalar timeValue = runTime.time().timeOutputValue();
+const vector laserPos = laserPositionSeries(timeValue);
+const scalar laserPower = laserPowerSeries(timeValue);
+const scalar laserSurfaceZ = laserPos.z();
 
-vector laserPos = laserPositionSeries(runTime.time().timeOutputValue());
-scalar laserPower = laserPowerSeries(runTime.time().timeOutputValue());
-scalar z_layer = laserPos.z(); // depth
+const scalar A = readScalar(LaserProperties.lookup("absorptivity"));
+const scalar rb = readScalar(LaserProperties.lookup("laserRadius"));
+const scalar d = readScalar(LaserProperties.lookup("absorptionDepth"));
+const scalar pi = constant::mathematical::pi;
 
 Q = dimensionedScalar("Q", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0);
 
+// Gaussian radial profile distributed uniformly over absorptionDepth.
 forAll(mesh.cells(), cellI)
 {
-    vector cellPos = mesh.C()[cellI]; // cell center
-    vector rVec = cellPos - laserPos;
-    scalar r = Foam::sqrt(rVec.x() * rVec.x() + rVec.y() * rVec.y());
-    // Gaussian volumetric heat source
-    if (cellPos.z() < z_layer && cellPos.z() > z_layer-d)
+    const vector cellPos = mesh.C()[cellI];
+    const vector rVec = cellPos - laserPos;
+    const scalar rSqr = Foam::sqr(rVec.x()) + Foam::sqr(rVec.y());
+
+    if (cellPos.z() < laserSurfaceZ && cellPos.z() > laserSurfaceZ - d)
     {
-        Q[cellI] = (2.0 * A * laserPower) / (M_PI * Foam::sqr(rb) * d) 
-                    * Foam::exp(-2.0 * Foam::sqr(r) / Foam::sqr(rb));
+        Q[cellI] =
+            (2.0*A*laserPower)/(pi*Foam::sqr(rb)*d)
+           *Foam::exp(-2.0*rSqr/Foam::sqr(rb));
     }
     else
     {
@@ -26,15 +33,14 @@ forAll(mesh.cells(), cellI)
     }
 }
 
-// Info << "Q After update\n" << endl;
-// Info << Q<< endl;
-
 scalar Pdep = 0.0;
 
+// Integrated source power, reduced across processors.
 forAll(Q, cellI)
 {
     Pdep += Q[cellI]*mesh.V()[cellI];
 }
 
 reduce(Pdep, sumOp<scalar>());
+
 Info<< "Deposited power = " << Pdep << " W" << nl << endl;

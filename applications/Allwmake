@@ -1,15 +1,17 @@
 #!/bin/bash
-cd "${0%/*}" || exit  # Run from this directory
+cd "${0%/*}" || exit 1
 
 targetType=""
 optAll="all"
+
 # Parse arguments for library compilation
 if [ -f "$WM_PROJECT"/wmake/scripts/AllwmakeParseArguments ]
-then  . "$WM_PROJECT"/wmake/scripts/AllwmakeParseArguments
+then
+    . "$WM_PROJECT"/wmake/scripts/AllwmakeParseArguments
     optAll="-all"
 fi
 
 wmake $optAll $targetType solvers
-wmake $optAll $targetType utilities
+wmake $optAll $targetType boundaryConditions
 
 #------------------------------------------------------------------------------

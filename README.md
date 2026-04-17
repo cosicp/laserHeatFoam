@@ -268,27 +268,35 @@ rGrad[faceI] = -qTot / max(kappa[faceI], SMALL);
 valueFraction[faceI] = 0.0;
 ```
 
-#### Example `T` boundary entry (top surface)
+The material/heat-loss constants are read from
+`constant/thermophysicalProperties`, not from the `T` field boundary entry.
+
+#### Example `T` Boundary Entry
 
 ```
 topWall
 {
     type            pbfRadEvapTemperature;
     kappa           k;          // conductivity field name
-    Tinf            300;        // ambient temperature [K]
-    hConv           17;         // convection coefficient [W/m2/K]
-    epsilon         0.3;        // emissivity
-    Tv              3560;       // boiling temperature [K]
-    Tmax            4560;       // evaporation T cap [K]
     enableEvap      true;
-    CP              54700;
-    CT              56600;
-    CM              9.16e-4;
-    hv              9.83e6;
-    Th0             663;
-    cpEvap          570;
     value           uniform 300;
 }
+```
+
+#### Example `thermophysicalProperties` Entries
+
+```
+Tinf            Tinf [0 0 0 1 0 0 0] 300;
+hConv           17;
+epsilon         0.3;
+Tv              3560;
+Tmax            4560;
+CP              54700;
+CT              56600;
+CM              9.16e-4;
+hv              9.83e6;
+Th0             663;
+cpEvap          570;
 ```
 
 ### 6.2 Bottom Wall — Fixed Temperature (Dirichlet)

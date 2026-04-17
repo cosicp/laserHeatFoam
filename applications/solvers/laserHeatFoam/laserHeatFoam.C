@@ -32,7 +32,7 @@ Group
 
 Description
     Heat conduction solver for Laser Powder Bed Fusion (LPBF) with a volumetric
-heat source.
+    heat source.
 
     \heading Solver details
     The solver solves the heat conduction equation for a scalar quantity, T. The
@@ -59,14 +59,18 @@ heat source.
 #include "fvCFD.H"
 #include "fvOptions.H"
 #include "simpleControl.H"
-#include "cmath"
 #include "interpolationTable.H"
+#include "mathematicalConstants.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-int main(int argc, char *argv[]) {
-  argList::addNote("Heat conduction solver for Laser Powder Bed Fusion (LPBF) "
-                   "with a volumetric heat source.");
+int main(int argc, char *argv[])
+{
+    argList::addNote
+    (
+        "Heat conduction solver for Laser Powder Bed Fusion (LPBF) "
+        "with a volumetric heat source."
+    );
 
 #include "postProcess.H"
 #include "addCheckCaseOptions.H"
@@ -74,90 +78,72 @@ int main(int argc, char *argv[]) {
 #include "createTime.H"
 #include "createMesh.H"
 
-  simpleControl simple(mesh);
+    simpleControl simple(mesh);
 
 #include "createFields.H"
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-  Info << "\nCalculating temperature distribution\n" << endl;
+    Info<< "\nCalculating temperature distribution\n" << endl;
 
-  while (runTime.loop()) {
-    Info << "Time = " << runTime.timeName() << nl << endl;
-
-    // Store previous liquid fraction (for post-processing / optional
-    // source-form)
-    fLold = fL;
-
-    #include "updateThermo.H"
-    #include "updateLaser.H"
-    #include "DiffusionNo.H"
-
-    // Apparent heat capacity latent heat model (Proell et al. 2020 / 2023):
-    // - liquid fraction fL ramps linearly between Ts and Tl
-    // - cpEff = cp + L * dfL/dT, where dfL/dT = 1/(Tl-Ts) in mushy zone else 0
-    // Notes:
-    // - L is specific latent heat [J/kg]
-    // - rho*cpEff enters the transient term (volumetric heat capacity)
-
-    const dimensionedScalar dTmush("dTmush", dimTemperature,
-                                   max(SMALL, (Tl - Ts).value()));
-
-    fL = min(max((T - Ts) / dTmush, dimensionedScalar("zero", dimless, 0)),
-             dimensionedScalar("one", dimless, 1));
-
-    const volScalarField mushyMask(pos(T - Ts) * pos(Tl - T));
-    cpEff = cp + mushyMask * (L / dTmush);
-
-    // Consolidated fraction (Proell 2020, eq. 23):
-    // rc = max fL ever reached — irreversible powder->melt transition.
-    rc = max(rc, fL);
-
-    // Phase fractions (Proell 2020, eqs. 24-26):
-    //   rp = 1 - rc   (powder fraction)
-    //   rm = fL        (melt fraction)
-    //   rs = rc - fL   (solid fraction)
-
-    // Phase fractions (Proell 2020, eqs. 24-26):
-    rp = scalar(1) - rc;
-    rm = fL;
-    rs = rc - fL;
-
-    // Phase-dependent thermal conductivity (Proell 2020, eq. 27):
-    //   k = rp*kp + rm*km + rs*ks
-    k = rp * kp + rm * km + rs * ks;
-
-    // Binary melt marker (1 if cell ever fully melted)
-    meltHistory = max(meltHistory, pos(T - Tl));
-
-    while (simple.correctNonOrthogonal()) {
-      fvScalarMatrix TEqn(rho * cpEff * fvm::ddt(T) - fvm::laplacian(k, T) ==
-                          Q);
-
-      // fvOptions.constrain(TEqn);
-      TEqn.solve();
-      // fvOptions.correct(T);
-    }
-
-    Info << "T after sol (max, full domain): " << max(T) << endl;
-    scalar maxTsubstrate = -GREAT;
-
-    forAll(T, cellI)
+    while (runTime.loop())
     {
-        if (mesh.C()[cellI].z() <= z_layer - d)
-            maxTsubstrate = max(maxTsubstrate, T[cellI]);
+        Info<< "Time = " << runTime.timeName() << nl << endl;
+
+        // Preserve the previous liquid fraction before thermo updates.
+        fLold = fL;
+
+        #include "updateThermo.H"
+        #include "updateLaser.H"
+        #include "DiffusionNo.H"
+        #include "updateCpeff.H"
+        #include "updateFractions.H"
+
+        // Rebuilding the effective conductivity from the current phase mix.
+        k = rp*kp + rm*km + rs*ks;
+
+        // Solve the transient heat equation with an apparent heat capacity.
+        while (simple.correctNonOrthogonal())
+        {
+            fvScalarMatrix TEqn
+            (
+                rho*cpEff*fvm::ddt(T) - fvm::laplacian(k, T) == Q
+            );
+
+            TEqn.solve();
+        }
+
+        Info<< "T after sol (max, full domain): " << max(T) << endl;
+
+        // Optional diagnostic below the laser surface, useful for monitoring
+        // substrate heating without post-processing the full field.
+        // if (substrateProbeDepth > SMALL)
+        // {
+        //     scalar maxTsubstrate = -GREAT;
+
+        //     forAll(T, cellI)
+        //     {
+        //         if (mesh.C()[cellI].z() <= laserSurfaceZ - substrateProbeDepth)
+        //         {
+        //             maxTsubstrate = max(maxTsubstrate, T[cellI]);
+        //         }
+        //     }
+
+        //     reduce(maxTsubstrate, maxOp<scalar>());
+
+        //     Info<< "T after sol (substrate, z<=laserZ-"
+        //         << substrateProbeDepth << "): " << maxTsubstrate
+        //         << " K" << endl;
+        // }
+
+        #include "write.H"
+
+        runTime.printExecutionTime(Info);
     }
 
-    reduce(maxTsubstrate, maxOp<scalar>());
-    Info << "T after sol (substrate, z<=laserZ-d): " << maxTsubstrate << " K" << endl;
+    Info<< "End\n" << endl;
 
-    #include "write.H"
-    runTime.printExecutionTime(Info);
-  }
-
-  Info << "End\n" << endl;
-
-  return 0;
+    return 0;
 }
 
 // ************************************************************************* //

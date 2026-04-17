@@ -3,6 +3,7 @@
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
 #include "surfaceFields.H"
+#include "IOdictionary.H"
 #include "physicoChemicalConstants.H"
 
 namespace Foam
@@ -42,8 +43,8 @@ pbfRadEvapTemperatureFvPatchScalarField
     Th0_(663.0),
     cpEvap_(500.0)
 {
-    refValue()    = scalarField(p.size(), Tinf_);
-    refGrad()     = scalarField(p.size(), 0.0);
+    refValue() = scalarField(p.size(), Tinf_);
+    refGrad() = scalarField(p.size(), 0.0);
     valueFraction() = scalarField(p.size(), 0.0);
 }
 
@@ -58,27 +59,140 @@ pbfRadEvapTemperatureFvPatchScalarField
 :
     mixedFvPatchScalarField(p, iF),
     kappaName_(dict.lookupOrDefault<word>("kappa", "kappaEff")),
-    Tinf_(readScalar(dict.lookup("Tinf"))),
-    hConv_(dict.lookupOrDefault<scalar>("hConv", 0.0)),
-    epsilon_(readScalar(dict.lookup("epsilon"))),
-    sigmaSB_
+    Tinf_(300.0),
+    hConv_(0.0),
+    epsilon_(0.7),
+    sigmaSB_(constant::physicoChemical::sigma.value()),
+    Tv_(3000.0),
+    Tmax_(4000.0),
+    enableEvap_(dict.lookupOrDefault<Switch>("enableEvap", true)),
+    CP_(54000.0),
+    CT_(50000.0),
+    CM_(0.001),
+    hv_(6.0e6),
+    Th0_(663.0),
+    cpEvap_(500.0)
+{
+    const IOdictionary thermoDict
     (
-        dict.lookupOrDefault<scalar>
+        IOobject
+        (
+            "thermophysicalProperties",
+            p.boundaryMesh().mesh().time().constant(),
+            p.boundaryMesh().mesh(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    );
+
+    Tinf_ =
+        dimensionedScalar::getOrDefault
+        (
+            "Tinf",
+            thermoDict,
+            dimTemperature,
+            Tinf_
+        ).value();
+
+    hConv_ =
+        dimensionedScalar::getOrDefault
+        (
+            "hConv",
+            thermoDict,
+            dimensionSet(1, 0, -3, -1, 0, 0, 0),
+            hConv_
+        ).value();
+
+    epsilon_ =
+        dimensionedScalar::getOrDefault
+        (
+            "epsilon",
+            thermoDict,
+            dimless,
+            epsilon_
+        ).value();
+
+    sigmaSB_ =
+        dimensionedScalar::getOrDefault
         (
             "sigmaSB",
-            constant::physicoChemical::sigma.value()
-        )
-    ),
-    Tv_(readScalar(dict.lookup("Tv"))),
-    Tmax_(readScalar(dict.lookup("Tmax"))),
-    enableEvap_(dict.lookupOrDefault<Switch>("enableEvap", true)),
-    CP_(readScalar(dict.lookup("CP"))),
-    CT_(readScalar(dict.lookup("CT"))),
-    CM_(readScalar(dict.lookup("CM"))),
-    hv_(readScalar(dict.lookup("hv"))),
-    Th0_(readScalar(dict.lookup("Th0"))),
-    cpEvap_(readScalar(dict.lookup("cpEvap")))
-{
+            thermoDict,
+            dimensionSet(1, 0, -3, -4, 0, 0, 0),
+            sigmaSB_
+        ).value();
+
+    Tv_ =
+        dimensionedScalar::getOrDefault
+        (
+            "Tv",
+            thermoDict,
+            dimTemperature,
+            Tv_
+        ).value();
+
+    Tmax_ =
+        dimensionedScalar::getOrDefault
+        (
+            "Tmax",
+            thermoDict,
+            dimTemperature,
+            Tmax_
+        ).value();
+
+    CP_ =
+        dimensionedScalar::getOrDefault
+        (
+            "CP",
+            thermoDict,
+            dimensionSet(1, -1, -2, 0, 0, 0, 0),
+            CP_
+        ).value();
+
+    CT_ =
+        dimensionedScalar::getOrDefault
+        (
+            "CT",
+            thermoDict,
+            dimTemperature,
+            CT_
+        ).value();
+
+    CM_ =
+        dimensionedScalar::getOrDefault
+        (
+            "CM",
+            thermoDict,
+            dimensionSet(0, -2, 2, 1, 0, 0, 0),
+            CM_
+        ).value();
+
+    hv_ =
+        dimensionedScalar::getOrDefault
+        (
+            "hv",
+            thermoDict,
+            dimEnergy/dimMass,
+            hv_
+        ).value();
+
+    Th0_ =
+        dimensionedScalar::getOrDefault
+        (
+            "Th0",
+            thermoDict,
+            dimTemperature,
+            Th0_
+        ).value();
+
+    cpEvap_ =
+        dimensionedScalar::getOrDefault
+        (
+            "cpEvap",
+            thermoDict,
+            dimEnergy/dimMass/dimTemperature,
+            cpEvap_
+        ).value();
+
     refValue()      = scalarField(p.size(), Tinf_);
     refGrad()       = scalarField(p.size(), 0.0);
     valueFraction() = scalarField(p.size(), 0.0);
@@ -207,8 +321,8 @@ void pbfRadEvapTemperatureFvPatchScalarField::updateCoeffs()
         {
             const scalar mdot =
                 0.82*CP_
-               *exp(-CT_*(1.0/Tc - 1.0/Tv_))
-               *sqrt(CM_/Tc);
+               *Foam::exp(-CT_*(1.0/Tc - 1.0/Tv_))
+               *Foam::sqrt(CM_/Tc);
 
             qEvap = mdot*(hv_ + cpEvap_*(Tc - Th0_));
         }
@@ -230,19 +344,7 @@ void pbfRadEvapTemperatureFvPatchScalarField::write(Ostream& os) const
     fvPatchScalarField::write(os);
 
     os.writeEntry("kappa",      kappaName_);
-    os.writeEntry("Tinf",       Tinf_);
-    os.writeEntry("hConv",      hConv_);
-    os.writeEntry("epsilon",    epsilon_);
-    os.writeEntry("sigmaSB",    sigmaSB_);
-    os.writeEntry("Tv",         Tv_);
-    os.writeEntry("Tmax",       Tmax_);
     os.writeEntry("enableEvap", enableEvap_);
-    os.writeEntry("CP",         CP_);
-    os.writeEntry("CT",         CT_);
-    os.writeEntry("CM",         CM_);
-    os.writeEntry("hv",         hv_);
-    os.writeEntry("Th0",        Th0_);
-    os.writeEntry("cpEvap",     cpEvap_);
 
     writeEntry("value", os);
 }

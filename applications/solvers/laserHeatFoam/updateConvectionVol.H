@@ -1,14 +1,14 @@
-scalar Tinf  = 300.0;
-
-// updateConvectionVol.H
+// Volumetric approximation of a surface convection sink over hLoss.
 convectionLoss = dimensionedScalar("zero", dimPower/dimVolume/dimTemperature, 0.0);
+
 forAll(mesh.cells(), cellI)
 {
-    scalar depth = zSurf - mesh.C()[cellI].z();
+    const scalar depth = zSurf - mesh.C()[cellI].z();
 
     if (depth >= 0.0 && depth <= hLoss)
     {
-        convectionLoss[cellI] = hConv/hLoss; // W/m3/K
+        convectionLoss[cellI] = hConv/hLoss;
     }
 }
+
 convectionLoss.correctBoundaryConditions();

@@ -1,4 +1,5 @@
-// Di ~ alpha*dt/dx^2, alpha = k/(rho*cpEff)
+// Explicit diffusion-number estimate used to limit the time step when
+// adjustTimeStep is enabled in controlDict.
 volScalarField alpha
 (
     IOobject
@@ -14,17 +15,20 @@ volScalarField alpha
 
 tmp<surfaceScalarField> tAlphaF = fvc::interpolate(alpha);
 
+// mesh.deltaCoeffs() gives an inverse distance scale at faces.
 tmp<surfaceScalarField> tDiF =
     tAlphaF * runTime.deltaTValue() * sqr(mesh.deltaCoeffs());
 
-scalar maxDiNow = gMax(tDiF().internalField());
+const scalar maxDiNow = gMax(tDiF().internalField());
 
 if (adjustTimeStep && maxDiNow > VSMALL)
 {
-    scalar dtNew = min(maxDeltaT, runTime.deltaTValue()*(maxDiTarget/maxDiNow));
+    // Keep the next step below the requested diffusion-number target.
+    const scalar dtNew =
+        min(maxDeltaT, runTime.deltaTValue()*(maxDiTarget/maxDiNow));
+
     runTime.setDeltaT(dtNew);
 }
 
 Info<< "maxDi = " << maxDiNow
     << "  deltaT = " << runTime.deltaTValue() << nl << endl;
-    

@@ -1,11 +1,11 @@
 #!/bin/bash
-cd "${0%/*}" || exit  # Run from this directory
+cd "${0%/*}" || exit 1
 
 echo
 echo "Cleaning applications"
 echo
 
 wclean all solvers
-wclean all utilities
+wclean all boundaryConditions
 
 #------------------------------------------------------------------------------
