@@ -10,11 +10,12 @@ then
     echo "Please source the OpenFOAM/FOAM bashrc first!"
     exit 1
 else
-    allowed_ver=("v2412" "v2506")
+    allowed_ver=("v2512" "v2506" "v2412")
 
     if ! [[ " ${allowed_ver[*]} " == *" $WM_PROJECT_VERSION "* ]]
     then
-        echo "Unsupported OpenFOAM version sourced!"
+        echo "WARNING: untested OpenFOAM version '$WM_PROJECT_VERSION'"
+        echo "         (supported: ${allowed_ver[*]}) - continuing anyway"
     fi
 fi
 
@@ -23,6 +24,11 @@ if [ -f "$WM_PROJECT_DIR"/wmake/scripts/AllwmakeParseArguments ]
 then
     . "$WM_PROJECT_DIR"/wmake/scripts/AllwmakeParseArguments
 fi
+
+(
+    cd src
+    ./Allwmake "$@" 2>&1 | tee log.Allwmake
+)
 
 (
     cd applications
