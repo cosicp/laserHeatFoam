@@ -20,7 +20,7 @@ baseplatePatch  baseplate;
 
 // Number of layers to activate sequentially. Layer k > 0 is built by
 // face-neighbour growth from layer k - 1.
-nLayers         4;
+nLayers         12;
 
 // Number of mesh cells through the thickness per user-level layer.
 // Defaults to 1 if omitted. With cellsPerLayer = M, each layer is
@@ -39,7 +39,7 @@ layerInitialT   300;
 // Optional: existing patch on the base mesh that should absorb the faces
 // exposed when fvMeshSubset cuts off the inactive cells. If omitted, a
 // synthetic 'oldInternalFaces' patch is created (zeroGradient default).
-// exposedFacesPatch  top;
+exposedFacesPatch  top;
 
 
 // ************************************************************************* //
