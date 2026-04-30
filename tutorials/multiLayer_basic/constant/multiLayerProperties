@@ -1,0 +1,38 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2512                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      multiLayerProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Patch on the base mesh whose adjacent cells form layer 0.
+baseplatePatch  baseplate;
+
+// Number of layers to activate sequentially. Layer k > 0 is built by
+// face-neighbour growth from layer k - 1.
+nLayers         4;
+
+// Wall-clock simulated time spent on each layer [s]. The solver overrides
+// runTime.endTime() with (layerI + 1) * layerDuration each iteration.
+layerDuration   200e-6;
+
+// Initial temperature [K] applied to cells as they are activated.
+layerInitialT   300;
+
+// Optional: existing patch on the base mesh that should absorb the faces
+// exposed when fvMeshSubset cuts off the inactive cells. If omitted, a
+// synthetic 'oldInternalFaces' patch is created (zeroGradient default).
+// exposedFacesPatch  top;
+
+
+// ************************************************************************* //

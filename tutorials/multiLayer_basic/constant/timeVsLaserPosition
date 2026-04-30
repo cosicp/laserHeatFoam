@@ -1,0 +1,13 @@
+// Laser xyz position [m] vs time [s].
+// y scans from 200 to 600 um across each 200 us layer window.
+// z is the surface of the currently-active topmost layer.
+(
+    (0          (100e-6 200e-6  30e-6))
+    (180e-6     (100e-6 600e-6  30e-6))
+    (200e-6     (100e-6 200e-6  60e-6))
+    (380e-6     (100e-6 600e-6  60e-6))
+    (400e-6     (100e-6 200e-6  90e-6))
+    (580e-6     (100e-6 600e-6  90e-6))
+    (600e-6     (100e-6 200e-6 120e-6))
+    (780e-6     (100e-6 600e-6 120e-6))
+)

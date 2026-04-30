@@ -1,0 +1,21 @@
+// Laser power [W] vs time [s]. Power is held at 195 W during each
+// layer's scan, and ramped to 0 during the brief teleport between
+// layers so the source vanishes while the laser surface jumps.
+(
+    (0           195)
+    (180e-6      195)
+    (180.0001e-6 0  )
+    (200e-6      0  )
+    (200.0001e-6 195)
+    (380e-6      195)
+    (380.0001e-6 0  )
+    (400e-6      0  )
+    (400.0001e-6 195)
+    (580e-6      195)
+    (580.0001e-6 0  )
+    (600e-6      0  )
+    (600.0001e-6 195)
+    (780e-6      195)
+    (780.0001e-6 0  )
+    (800e-6      0  )
+)

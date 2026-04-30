@@ -1,0 +1,95 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM / foam-extend thermal properties       |
+|  \\    /   O peration     | Version: 4.0                                   |
+|   \\  /    A nd           |                                                 |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Density [kg/m^3]
+rho             4100;
+
+// Specific heat [J/kg/K]
+Cp              570;
+
+// Phase-dependent thermal conductivity [W/m/K]
+// kp: powder  (low - highly porous)
+// ks: solid   (Ti-6Al-4V bulk)
+// km: melt    (liquid Ti, higher than solid)
+kp              0.2;
+ks              6.7;
+km              30.0;
+
+// Melting temperature [K]
+Tm              Tm [0 0 0 1 0 0 0] 1878;
+
+// Temperature interval for latent heat smoothing [K]
+dT              100;
+
+// Optional: reference temperature
+TRef            TRef [0 0 0 1 0 0 0] 300;
+Tinf            Tinf [0 0 0 1 0 0 0] 300;
+
+// Radiation, convection, and evaporation boundary properties
+hConv           17;
+epsilon         0.3;
+Tv              3560;
+Tmax            4560;
+CP              54700;
+CT              56600;
+CM              9.16e-4;
+hv              9.83e6;
+Th0             663;
+cpEvap          570;
+
+Tl             1928;
+Ts             1878;
+
+// Latent heat for melting [J/kg]
+L               2.85e5;
+
+// Initial powder porosity [-] (Mohammadkamal eq. 1: rho_eff = (1-phi)*rho_solid)
+phi             0.35;
+
+// Temperature-dependent property polynomial coefficients (Ti-6Al-4V)
+// Source: Mohammadkamal & Caiazzo (2025), Table 1
+//
+// Piecewise breakpoint temperature [K]
+T1              1268;
+//
+// rho [kg/m3]:  T < Tl  -> rho0s + rho1s*T
+//               T >= Tl -> rho0m + rho1m*T
+rho0s           4557.892;   // = 4512 - 0.154*(-298) = 4512 + 0.154*298
+rho1s           -0.154;
+rho0m           5227.640;   // = 3920 + 0.680*1923
+rho1m           -0.680;
+//
+// Cp [J/kg/K]:  T < T1       -> cp0a + cp1a*T
+//               T1 <= T < Tl -> cp0b + cp1b*T
+//               T >= Tl      -> cpL
+cp0a            483.04;
+cp1a            0.215;
+cp0b            412.70;
+cp1b            0.18;
+cpL             831.0;
+//
+// k solid/melt [W/m/K]:  T < T1       -> k0a + k1a*T
+//                         T1 <= T < Tl -> k0b + k1b*T
+//                         T >= Tl      -> k0m + k1m*T
+k0a             1.250;
+k1a             0.015;
+k0b             3.15;
+k1b             0.012;
+k0m             -12.752;
+k1m             0.024;
+
+// ************************************************************************* //
