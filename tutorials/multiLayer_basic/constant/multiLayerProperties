@@ -22,6 +22,13 @@ baseplatePatch  baseplate;
 // face-neighbour growth from layer k - 1.
 nLayers         4;
 
+// Number of mesh cells through the thickness per user-level layer.
+// Defaults to 1 if omitted. With cellsPerLayer = M, each layer is
+// constructed by M successive face-neighbour growth steps, so the mesh
+// must have at least nLayers * cellsPerLayer cells reachable from the
+// baseplate patch in the thickness direction.
+cellsPerLayer   3;
+
 // Wall-clock simulated time spent on each layer [s]. The solver overrides
 // runTime.endTime() with (layerI + 1) * layerDuration each iteration.
 layerDuration   200e-6;

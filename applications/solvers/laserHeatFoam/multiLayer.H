@@ -22,8 +22,14 @@ Description
     cells with a face on the baseplate patch; layer k (k > 0) is the set
     of face-neighbours of layer k - 1 that have not yet been visited.
 
+    Each user-level layer can correspond to M >= 1 mesh cells in the
+    thickness direction (cellsPerLayer); the layer is then built as M
+    successive face-neighbour growth steps starting from the baseplate
+    patch (for layer 0) or from the boundary of the previous layer.
+
     Provides the following identifiers in enclosing scope:
         nLayers           label
+        cellsPerLayer     label   (mesh cells through the thickness, >= 1)
         layerDuration     scalar  [s]
         layerInitialT     scalar  [K]
         exposedPatchID    label   (-1 -> default oldInternalFaces patch)
@@ -45,10 +51,19 @@ IOdictionary multiLayerDict
 
 const word baseplatePatch = multiLayerDict.get<word>("baseplatePatch");
 const label nLayers = multiLayerDict.get<label>("nLayers");
+const label cellsPerLayer =
+    multiLayerDict.lookupOrDefault<label>("cellsPerLayer", 1);
 const scalar layerDuration = multiLayerDict.get<scalar>("layerDuration");
 const scalar layerInitialT = multiLayerDict.get<scalar>("layerInitialT");
 const word exposedFacesPatch =
     multiLayerDict.lookupOrDefault<word>("exposedFacesPatch", word::null);
+
+if (cellsPerLayer < 1)
+{
+    FatalErrorInFunction
+        << "cellsPerLayer must be >= 1, got " << cellsPerLayer
+        << exit(FatalError);
+}
 
 label exposedPatchID = -1;
 if (!exposedFacesPatch.empty())
@@ -93,53 +108,104 @@ List<labelHashSet> layerCells(nLayers);
 {
     const polyPatch& bp = mesh.boundaryMesh()[baseplatePatchID];
     const labelUList& bpFaceCells = bp.faceCells();
-
-    labelHashSet layer0(2*bp.size());
-    forAll(bpFaceCells, i)
-    {
-        layer0.insert(bpFaceCells[i]);
-    }
-    layerCells[0] = std::move(layer0);
-
-    labelHashSet covered(layerCells[0]);
     const labelListList& cellCells = mesh.cellCells();
 
-    for (label i = 1; i < nLayers; ++i)
+    // Cells already assigned to some layer.
+    labelHashSet covered(2*bp.size()*cellsPerLayer);
+
+    // Seed for the next layer: cells from which the next halo step grows.
+    // Initially this is the set of cells with a face on the baseplate.
+    labelHashSet seed(2*bp.size());
+    forAll(bpFaceCells, i)
     {
-        labelHashSet next(layerCells[i-1].size());
+        seed.insert(bpFaceCells[i]);
+    }
 
-        for (const label cellI : layerCells[i-1])
+    // Helper: collect face-neighbours of `frontier` that are not yet in
+    // `excludeA` or `excludeB`.
+    const auto haloStep =
+        [&cellCells]
+        (
+            const labelHashSet& frontier,
+            const labelHashSet& excludeA,
+            const labelHashSet& excludeB
+        ) -> labelHashSet
         {
-            const labelList& nbrs = cellCells[cellI];
+            labelHashSet next(frontier.size());
 
-            forAll(nbrs, n)
+            for (const label cellI : frontier)
             {
-                const label nbr = nbrs[n];
+                const labelList& nbrs = cellCells[cellI];
 
-                if (!covered.found(nbr))
+                forAll(nbrs, n)
                 {
-                    next.insert(nbr);
+                    const label nbr = nbrs[n];
+
+                    if (!excludeA.found(nbr) && !excludeB.found(nbr))
+                    {
+                        next.insert(nbr);
+                    }
                 }
             }
-        }
 
-        if (next.empty())
+            return next;
+        };
+
+    for (label k = 0; k < nLayers; ++k)
+    {
+        // For k > 0, replace the seed with the first halo step from the
+        // previous layer's cells (so that the seed lies just above the
+        // last fully-assigned layer).
+        if (k > 0)
         {
-            FatalErrorInFunction
-                << "Layer " << i << " has no cells. The mesh appears to"
-                << " have fewer than " << nLayers << " layers reachable"
-                << " from patch '" << baseplatePatch << "'."
-                << exit(FatalError);
+            labelHashSet next =
+                haloStep(layerCells[k-1], covered, labelHashSet());
+
+            if (next.empty())
+            {
+                FatalErrorInFunction
+                    << "Layer " << k << " has no cells. The mesh has"
+                    << " fewer than " << nLayers << "*" << cellsPerLayer
+                    << " cells in the thickness direction reachable"
+                    << " from patch '" << baseplatePatch << "'."
+                    << exit(FatalError);
+            }
+
+            seed = std::move(next);
         }
 
-        covered |= next;
-        layerCells[i] = std::move(next);
+        // Build this layer: seed + (cellsPerLayer - 1) more halo steps.
+        labelHashSet thisLayer(seed);
+        labelHashSet frontier(seed);
+
+        for (label step = 1; step < cellsPerLayer; ++step)
+        {
+            labelHashSet next = haloStep(frontier, covered, thisLayer);
+
+            if (next.empty())
+            {
+                FatalErrorInFunction
+                    << "Layer " << k << " halo step " << step
+                    << " of " << (cellsPerLayer - 1) << " produced no"
+                    << " new cells. The mesh has fewer than "
+                    << cellsPerLayer << " cells in the thickness"
+                    << " direction at this layer."
+                    << exit(FatalError);
+            }
+
+            thisLayer |= next;
+            frontier = std::move(next);
+        }
+
+        covered |= thisLayer;
+        layerCells[k] = std::move(thisLayer);
     }
 }
 
 label totalLayerCells = 0;
 Info<< "Multi-layer: per-layer cell counts (face-neighbour growth from '"
-    << baseplatePatch << "'):" << endl;
+    << baseplatePatch << "', " << cellsPerLayer
+    << " cell(s) per layer through the thickness):" << endl;
 
 forAll(layerCells, i)
 {
