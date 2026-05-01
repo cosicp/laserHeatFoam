@@ -1,0 +1,60 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2512                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dynamicMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dynamicFvMesh   dynamicRefineFvMesh;
+
+// How often (in time steps) to refine.
+refineInterval  1;
+
+// Field that drives refinement. Built each step by the solver
+// (updateRefineIndicator.H) as 4*ms*(1-ms) where ms is a Jacobi-smoothed
+// version of meltHistory; peaks at 1 in the consolidated/unconsolidated
+// interface band and falls to 0 deep in either region.
+field           refineIndicator;
+
+// Refine cells whose value lies in (lowerRefineLevel, upperRefineLevel).
+lowerRefineLevel 0.1;
+upperRefineLevel 1.1;
+
+// Cells with refineIndicator below unrefineLevel are eligible for
+// coarsening. The 4*x*(1-x) shape ensures both fully-consolidated and
+// fully-unconsolidated regions sit in this regime.
+unrefineLevel   0.05;
+
+// Buffer layers around refined cells to keep gradation gentle.
+nBufferLayers   2;
+
+// Maximum levels of refinement above the base mesh.
+maxRefinement   2;
+
+// Cap on total cell count.
+maxCells        500000;
+
+// No surface flux fields in this solver.
+correctFluxes   ();
+
+// Write cellLevel as a volScalarField for visualisation.
+dumpLevel       true;
+
+// Solver-side: number of Jacobi smoothing sweeps over meltHistory used
+// to build refineIndicator. Roughly sets the width (in cells) of the
+// detected interface band. 0 disables AMR effectively (binary field
+// never falls in the refine band).
+indicatorSmoothing 3;
+
+
+// ************************************************************************* //

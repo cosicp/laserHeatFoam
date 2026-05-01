@@ -57,11 +57,13 @@ Author
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
+#include "dynamicFvMesh.H"
 #include "fvOptions.H"
 #include "simpleControl.H"
 #include "interpolationTable.H"
 #include "mathematicalConstants.H"
 #include "fvMeshSubset.H"
+#include "rebuildActiveCells.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -77,17 +79,36 @@ int main(int argc, char *argv[])
     #include "addCheckCaseOptions.H"
     #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createMesh.H"
+    #include "createDynamicFvMesh.H"
 
     simpleControl simple(mesh);
 
     #include "createFields.H"
     #include "multiLayer.H"
 
+    // Number of Jacobi smoothing sweeps applied to meltHistory when
+    // building refineIndicator. Co-located with the rest of the AMR
+    // configuration in constant/dynamicMeshDict; default 3 sweeps if
+    // absent. Read once at startup; the dict itself is owned by the
+    // dynamicFvMesh.
+    const label indicatorSmoothing =
+        IOdictionary
+        (
+            IOobject
+            (
+                "dynamicMeshDict",
+                runTime.constant(),
+                mesh,
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE,
+                IOobject::NO_REGISTER
+            )
+        ).getOrDefault<label>("indicatorSmoothing", 3);
+
     // Re-bind base-mesh fields under explicit names so we can shadow the
     // bare names with sub-mesh equivalents inside the layer loop without
     // losing access to the base versions.
-    const fvMesh& baseMesh = mesh;
+    dynamicFvMesh& baseMesh = mesh;
     volScalarField& baseT = T;
     volScalarField& baseRho = rho;
     volScalarField& baseCp = cp;
@@ -100,9 +121,25 @@ int main(int argc, char *argv[])
     volScalarField& baseRs = rs;
     volScalarField& baseQ = Q;
     volScalarField& baseMeltHistory = meltHistory;
+    volScalarField& baseLayerID = layerID;
 
-    fvMeshSubset subMesher(baseMesh);
-    labelHashSet activeCells(baseMesh.nCells());
+    // fvMeshSubset's subMesh internals reference the base mesh's
+    // current topology; after a base-mesh refinement event the subset
+    // has to be rebuilt from scratch (fresh fvMeshSubset), not just
+    // reset(). Hold by autoPtr so we can swap it after each AMR step.
+    autoPtr<fvMeshSubset> subMesherPtr(new fvMeshSubset(baseMesh));
+    labelHashSet activeCells(2*baseMesh.nCells());
+
+    // dynamicRefineFvMesh::mapFields reads the base-mesh old-cell-volume
+    // field V0 when remapping conserved fields across a refinement
+    // event. fvMesh only stores V0 inside updateMesh() if VPtr_ has been
+    // realised (fvMesh.C:977 "if (VPtr_) storeOldVol(...)"). We solve T
+    // on the sub-mesh and never touch base-mesh V in the steady state,
+    // so without this nudge VPtr_ stays null and the first refinement
+    // event aborts with "V0 is not available". Materialising V() once
+    // at startup is sufficient — fvMesh keeps it alive and storeOldVol
+    // takes over from there.
+    (void)baseMesh.V();
 
     Info<< nl
         << "Simulating " << nLayers << " layer(s); each layer runs for "
@@ -114,33 +151,74 @@ int main(int argc, char *argv[])
 
     for (label layerI = 0; layerI < nLayers; ++layerI)
     {
-        Info<< "Activating layer " << layerI
-            << " (" << layerCells[layerI].size() << " new cells)" << endl;
-
-        // Initialise temperature on cells being activated this iteration.
-        // Already-active cells keep their running thermal history.
-        for (const label cellI : layerCells[layerI])
+        // Initialise temperature on cells being activated this iteration
+        // (those with layerID == layerI). Already-active cells keep their
+        // running thermal history. Using baseLayerID as the source rather
+        // than a stored labelHashSet means the activation step is robust
+        // to any AMR that occurred during previous layers — children of
+        // a layer-K cell inherit layerID == K, so they are still picked
+        // up here by their post-refinement labels.
+        const scalarField& lidFld = baseLayerID.primitiveField();
+        label nNewCells = 0;
+        forAll(lidFld, cellI)
         {
-            baseT[cellI] = layerInitialT;
+            if (label(std::lround(lidFld[cellI])) == layerI)
+            {
+                baseT[cellI] = layerInitialT;
+                ++nNewCells;
+            }
         }
         baseT.correctBoundaryConditions();
 
-        // Grow the active set and rebuild the sub-mesh.
-        activeCells |= layerCells[layerI];
-        subMesher.reset(activeCells, exposedPatchID);
+        Info<< "Activating layer " << layerI
+            << " (" << nNewCells << " new cells)" << endl;
+
+        // Grow the active set to include this layer and rebuild the
+        // sub-mesh.
+        rebuildActiveCells(baseLayerID, layerI, activeCells);
+        subMesherPtr->reset(activeCells, exposedPatchID);
 
         // Extend simulation end time to cover this layer.
         runTime.setEndTime((layerI + 1)*layerDuration);
 
-        Info<< "    sub-mesh: " << subMesher.subMesh().nCells()
+        Info<< "    sub-mesh: " << subMesherPtr->subMesh().nCells()
             << " cells; layer end time: " << runTime.endTime().value()
             << " s" << nl << endl;
 
-        // Sub-mesh scope: the bare names mesh, T, rho, ... are shadowed
-        // here so that the existing update*.H, DiffusionNo.H and write.H
-        // includes operate on the sub-mesh without modification.
+        // Time loop for this layer. The sub-mesh and its derived fields
+        // are constructed inside the loop body so they are rebuilt
+        // freshly when AMR has changed the base-mesh topology.
+        while (runTime.loop())
         {
-            const fvMesh& mesh = subMesher.subMesh();
+            Info<< "Time = " << runTime.timeName() << nl << endl;
+
+            // dynamicRefineFvMesh::update() reads refineIndicator from
+            // the base mesh and refines/unrefines accordingly. All
+            // registered volScalarFields (T, rho, cp, rc, meltHistory,
+            // layerID, refineIndicator, ...) are mapped automatically.
+            const bool meshChanged = baseMesh.update();
+
+            if (meshChanged)
+            {
+                Info<< "    AMR: base mesh now has "
+                    << baseMesh.nCells() << " cells" << endl;
+
+                // Cell labels have been remapped; rebuild activeCells
+                // from the (mapped) layerID and rebuild the subset
+                // helper from the refined base mesh.
+                rebuildActiveCells(baseLayerID, layerI, activeCells);
+                subMesherPtr.reset(new fvMeshSubset(baseMesh));
+                subMesherPtr->reset(activeCells, exposedPatchID);
+            }
+
+            fvMeshSubset& subMesher = subMesherPtr();
+
+            // Sub-mesh scope: the bare names mesh, T, rho, ... are
+            // shadowed here so that the existing update*.H, DiffusionNo.H
+            // and write.H includes operate on the sub-mesh without
+            // modification.
+            {
+                const fvMesh& mesh = subMesher.subMesh();
 
             // Persistent state copied from the base mesh.
             // fvMeshSubset::interpolate names the result "subset<base>";
@@ -321,74 +399,73 @@ int main(int argc, char *argv[])
                 )
             );
 
-            // Time loop for this layer.
-            while (runTime.loop())
+            // Preserve the previous liquid fraction before thermo
+            // updates.
+            fLold = fL;
+
+            #include "updateThermo.H"
+            #include "updateLaser.H"
+            #include "DiffusionNo.H"
+            #include "updateCpeff.H"
+            #include "updateFractions.H"
+
+            // Effective conductivity from the current phase mix.
+            k = rp*kp + rm*km + rs*ks;
+
+            // Solve the transient heat equation with an apparent heat
+            // capacity.
+            while (simple.correctNonOrthogonal())
             {
-                Info<< "Time = " << runTime.timeName() << nl << endl;
+                fvScalarMatrix TEqn
+                (
+                    rho*cpEff*fvm::ddt(T) - fvm::laplacian(k, T) == Q
+                );
 
-                // Preserve the previous liquid fraction before thermo
-                // updates.
-                fLold = fL;
-
-                #include "updateThermo.H"
-                #include "updateLaser.H"
-                #include "DiffusionNo.H"
-                #include "updateCpeff.H"
-                #include "updateFractions.H"
-
-                // Effective conductivity from the current phase mix.
-                k = rp*kp + rm*km + rs*ks;
-
-                // Solve the transient heat equation with an apparent heat
-                // capacity.
-                while (simple.correctNonOrthogonal())
-                {
-                    fvScalarMatrix TEqn
-                    (
-                        rho*cpEff*fvm::ddt(T) - fvm::laplacian(k, T) == Q
-                    );
-
-                    TEqn.solve();
-                }
-
-                Info<< "T (active sub-mesh): max = " << max(T).value()
-                    << ", min = " << min(T).value() << endl;
-
-                // Scatter sub-mesh state back to the base mesh so that
-                // write.H produces complete output for the whole domain.
-                {
-                    const labelList& cMap = subMesher.cellMap();
-                    forAll(cMap, i)
-                    {
-                        const label bI = cMap[i];
-
-                        baseT[bI] = T[i];
-                        baseRho[bI] = rho[i];
-                        baseCp[bI] = cp[i];
-                        baseRc[bI] = rc[i];
-                        baseK[bI] = k[i];
-                        baseCpEff[bI] = cpEff[i];
-                        baseFL[bI] = fL[i];
-                        baseRp[bI] = rp[i];
-                        baseRm[bI] = rm[i];
-                        baseRs[bI] = rs[i];
-                        baseQ[bI] = Q[i];
-                        baseMeltHistory[bI] = meltHistory[i];
-                    }
-                    baseT.correctBoundaryConditions();
-                }
-
-                // Restore the bare names to base-mesh objects so write.H
-                // outputs the full base mesh and writes gradT correctly.
-                {
-                    const fvMesh& mesh = baseMesh;
-                    const volScalarField& T = baseT;
-
-                    #include "write.H"
-                }
-
-                runTime.printExecutionTime(Info);
+                TEqn.solve();
             }
+
+            Info<< "T (active sub-mesh): max = " << max(T).value()
+                << ", min = " << min(T).value() << endl;
+
+            // Scatter sub-mesh state back to the base mesh so that
+            // write.H produces complete output for the whole domain
+            // and so the next mesh.update() sees an up-to-date
+            // baseMeltHistory when computing refineIndicator.
+            {
+                const labelList& cMap = subMesher.cellMap();
+                forAll(cMap, i)
+                {
+                    const label bI = cMap[i];
+
+                    baseT[bI] = T[i];
+                    baseRho[bI] = rho[i];
+                    baseCp[bI] = cp[i];
+                    baseRc[bI] = rc[i];
+                    baseK[bI] = k[i];
+                    baseCpEff[bI] = cpEff[i];
+                    baseFL[bI] = fL[i];
+                    baseRp[bI] = rp[i];
+                    baseRm[bI] = rm[i];
+                    baseRs[bI] = rs[i];
+                    baseQ[bI] = Q[i];
+                    baseMeltHistory[bI] = meltHistory[i];
+                }
+                baseT.correctBoundaryConditions();
+            }
+            } // end sub-mesh scope (sub-mesh fields destroyed here)
+
+            // Refresh the AMR driver field from the (just-updated)
+            // baseMeltHistory. This must be done after the sub-mesh
+            // scope closes so its sub-mesh "meltHistory" object is no
+            // longer in the registry shadowing the base-mesh field.
+            #include "updateRefineIndicator.H"
+
+            // Write the full-base-mesh output. write.H references
+            // mesh and T; both already resolve to the base versions
+            // (the sub-mesh shadows are out of scope).
+            #include "write.H"
+
+            runTime.printExecutionTime(Info);
         }
     }
 

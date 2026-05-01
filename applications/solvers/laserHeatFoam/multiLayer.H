@@ -214,6 +214,19 @@ forAll(layerCells, i)
     totalLayerCells += layerCells[i].size();
 }
 
+// Populate the persistent base-mesh layerID field from the BFS sets.
+// This is the only place layerCells[] is consumed; once written, layerID
+// is mapped automatically across base-mesh refinement events and is the
+// single source of truth for layer membership thereafter.
+forAll(layerCells, i)
+{
+    for (const label cellI : layerCells[i])
+    {
+        layerID[cellI] = scalar(i);
+    }
+}
+layerID.correctBoundaryConditions();
+
 Info<< "    total active cells across all layers: " << totalLayerCells
     << " / " << mesh.nCells() << " base mesh cells";
 
