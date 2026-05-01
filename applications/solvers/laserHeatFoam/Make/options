@@ -4,6 +4,8 @@ EXE_INC = \
     -I$(LIB_SRC)/transportModels/compressible/lnInclude
 
 EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -lpbfRadEvapTemperature \
     -lfiniteVolume \
     -lfvOptions \
     -lthermoTools \

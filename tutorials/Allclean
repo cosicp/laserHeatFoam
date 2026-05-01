@@ -44,15 +44,19 @@
 targetType=""
 optAll="all"
 # Parse arguments for library compilation
-if [ -f "$WM_PROJECT"/wmake/scripts/AllwmakeParseArguments ]
-then  . "$WM_PROJECT"/wmake/scripts/AllwmakeParseArguments
+if [ -f "$WM_PROJECT_DIR"/wmake/scripts/AllwmakeParseArguments ]
+then
+    . "$WM_PROJECT_DIR"/wmake/scripts/AllwmakeParseArguments
     optAll="-all"
 fi
 
 for dir in */; do
-    cd "$dir"
-    ./Allclean
-    cd ..
+    if [ -x "$dir/Allclean" ]
+    then
+        (cd "$dir" && ./Allclean)
+    else
+        echo "Skipping $dir (no executable Allclean)"
+    fi
 done
 
 # ----------------------------------------------------------------- end-of-file
