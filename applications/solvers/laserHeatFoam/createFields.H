@@ -44,6 +44,45 @@ volScalarField meltHistory
     dimensionedScalar("zero", dimless, 0.0)
 );
 
+// Persistent per-cell layer index on the base mesh. Filled by
+// multiLayer.H from the BFS-derived per-layer cell sets and then mapped
+// automatically by dynamicRefineFvMesh when the base mesh is refined
+// (children inherit their parent's layerID, which is exactly what we
+// want — a child of a layer-3 cell is still in layer 3).
+//
+// Cells with layerID < 0 are never activated (e.g. cells beyond
+// nLayers*cellsPerLayer in the thickness direction).
+volScalarField layerID
+(
+    IOobject
+    (
+        "layerID",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("layerID", dimless, -1.0)
+);
+
+// Refinement indicator: an interface-peaked function of a smoothed
+// meltHistory. Computed each step by updateRefineIndicator.H and read
+// by dynamicRefineFvMesh to decide where to refine/unrefine.
+volScalarField refineIndicator
+(
+    IOobject
+    (
+        "refineIndicator",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("zero", dimless, 0.0)
+);
+
 #include "createFvOptions.H"
 
 // Thermophysical fields read from the case and updated during the run.
