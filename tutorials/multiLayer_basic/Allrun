@@ -9,5 +9,18 @@ cp -r initial 0
 # Create the mesh
 runApplication blockMesh
 
-# Run in serial (case is small, ~1600 cells)
-runApplication laserHeatFoam
+# Run mode: set to "serial" or "parallel" (4 ranks, see decomposeParDict).
+runMode=${runMode:-parallel}
+
+if [ "$runMode" = "parallel" ]
+then
+    runApplication decomposePar
+    runParallel laserHeatFoam
+    # AMR rewrites the polyMesh per time directory; the per-proc
+    # *ProcAddressing files have to be regenerated for each refined
+    # mesh before reconstructPar can map fields back to a single mesh.
+    runApplication reconstructParMesh
+    runApplication reconstructPar
+else
+    runApplication laserHeatFoam
+fi

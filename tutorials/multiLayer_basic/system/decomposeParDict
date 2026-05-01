@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2512                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      decomposeParDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+numberOfSubdomains 4;
+
+// Decompose along y (the laser scan direction). Each rank holds a
+// 10 x 10 x 36 chunk; every layer crosses all four ranks, which
+// stresses the parallel BFS in multiLayer.H and the processor-patch
+// path in fvMeshSubset / dynamicRefineFvMesh.
+method          simple;
+
+simpleCoeffs
+{
+    n           (1 4 1);
+}
+
+// Scotch is a reasonable alternative once load balancing matters more
+// than determinism — comment-in to switch.
+// method       scotch;
+
+
+// ************************************************************************* //

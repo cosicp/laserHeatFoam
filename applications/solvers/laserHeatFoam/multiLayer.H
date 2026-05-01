@@ -121,10 +121,37 @@ List<labelHashSet> layerCells(nLayers);
         seed.insert(bpFaceCells[i]);
     }
 
+    // Reusable scalar marker used by haloStep to broadcast the frontier
+    // across processor patches. Allocating it once outside the BFS loop
+    // avoids the per-step IOobject + field construction cost.
+    volScalarField frontierMarker
+    (
+        IOobject
+        (
+            "frontierMarker",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE,
+            IOobject::NO_REGISTER
+        ),
+        mesh,
+        dimensionedScalar("zero", dimless, 0.0)
+    );
+
     // Helper: collect face-neighbours of `frontier` that are not yet in
-    // `excludeA` or `excludeB`.
+    // `excludeA` or `excludeB`. Two stages so the BFS is correct in
+    // parallel:
+    //   1. local expansion via mesh.cellCells() (intra-rank face graph).
+    //   2. cross-processor expansion: paint the frontier into a
+    //      volScalarField, evaluate boundary conditions so processor
+    //      patches exchange their owner-cell values, then any local
+    //      cell whose coupled-patch face has neighbour value > 0.5 is
+    //      a face-neighbour of a frontier cell on the other rank.
+    // For serial runs the second stage is a no-op (no coupled patches
+    // carry remote owners) so the original behaviour is preserved.
     const auto haloStep =
-        [&cellCells]
+        [&mesh, &cellCells, &frontierMarker]
         (
             const labelHashSet& frontier,
             const labelHashSet& excludeA,
@@ -133,6 +160,7 @@ List<labelHashSet> layerCells(nLayers);
         {
             labelHashSet next(frontier.size());
 
+            // 1. Local face-neighbour expansion.
             for (const label cellI : frontier)
             {
                 const labelList& nbrs = cellCells[cellI];
@@ -144,6 +172,47 @@ List<labelHashSet> layerCells(nLayers);
                     if (!excludeA.found(nbr) && !excludeB.found(nbr))
                     {
                         next.insert(nbr);
+                    }
+                }
+            }
+
+            // 2. Cross-processor expansion (no-op in serial).
+            if (Pstream::parRun())
+            {
+                scalarField& mFld = frontierMarker.primitiveFieldRef();
+                mFld = scalar(0);
+                for (const label cellI : frontier)
+                {
+                    mFld[cellI] = scalar(1);
+                }
+                frontierMarker.correctBoundaryConditions();
+
+                forAll(mesh.boundary(), patchI)
+                {
+                    if (!mesh.boundary()[patchI].coupled())
+                    {
+                        continue;
+                    }
+
+                    const fvPatchScalarField& pf =
+                        frontierMarker.boundaryField()[patchI];
+                    const labelUList& fcs =
+                        mesh.boundary()[patchI].faceCells();
+
+                    forAll(fcs, i)
+                    {
+                        if (pf[i] > scalar(0.5))
+                        {
+                            const label cellI = fcs[i];
+                            if
+                            (
+                                !excludeA.found(cellI)
+                             && !excludeB.found(cellI)
+                            )
+                            {
+                                next.insert(cellI);
+                            }
+                        }
                     }
                 }
             }
@@ -161,7 +230,10 @@ List<labelHashSet> layerCells(nLayers);
             labelHashSet next =
                 haloStep(layerCells[k-1], covered, labelHashSet());
 
-            if (next.empty())
+            // Only fatal if no rank found a new cell. Per-rank emptiness
+            // is normal: a layer may live entirely on a different
+            // processor.
+            if (returnReduce(next.size(), sumOp<label>()) == 0)
             {
                 FatalErrorInFunction
                     << "Layer " << k << " has no cells. The mesh has"
@@ -182,7 +254,8 @@ List<labelHashSet> layerCells(nLayers);
         {
             labelHashSet next = haloStep(frontier, covered, thisLayer);
 
-            if (next.empty())
+            // Globally fatal only: per-rank emptiness is normal.
+            if (returnReduce(next.size(), sumOp<label>()) == 0)
             {
                 FatalErrorInFunction
                     << "Layer " << k << " halo step " << step
@@ -209,9 +282,12 @@ Info<< "Multi-layer: per-layer cell counts (face-neighbour growth from '"
 
 forAll(layerCells, i)
 {
-    Info<< "    layer " << i << " : " << layerCells[i].size() << " cells"
-        << endl;
-    totalLayerCells += layerCells[i].size();
+    // In parallel each rank holds only its slice; sum for the global
+    // count that the user actually wants to see.
+    const label sz =
+        returnReduce(layerCells[i].size(), sumOp<label>());
+    Info<< "    layer " << i << " : " << sz << " cells" << endl;
+    totalLayerCells += sz;
 }
 
 // Populate the persistent base-mesh layerID field from the BFS sets.
@@ -227,12 +303,14 @@ forAll(layerCells, i)
 }
 layerID.correctBoundaryConditions();
 
-Info<< "    total active cells across all layers: " << totalLayerCells
-    << " / " << mesh.nCells() << " base mesh cells";
+const label globalNCells = returnReduce(mesh.nCells(), sumOp<label>());
 
-if (totalLayerCells < mesh.nCells())
+Info<< "    total active cells across all layers: " << totalLayerCells
+    << " / " << globalNCells << " base mesh cells";
+
+if (totalLayerCells < globalNCells)
 {
-    Info<< " (" << (mesh.nCells() - totalLayerCells)
+    Info<< " (" << (globalNCells - totalLayerCells)
         << " cells will remain inactive throughout the run)";
 }
 

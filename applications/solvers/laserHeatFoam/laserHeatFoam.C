@@ -450,7 +450,24 @@ int main(int argc, char *argv[])
                     baseQ[bI] = Q[i];
                     baseMeltHistory[bI] = meltHistory[i];
                 }
+
+                // After writing internal-field values directly we have
+                // to refresh boundary conditions on each base field so
+                // processor patches see the updated values. Otherwise
+                // the next mesh.update() and the next sub-mesh build
+                // pull stale halo data across rank boundaries.
                 baseT.correctBoundaryConditions();
+                baseRho.correctBoundaryConditions();
+                baseCp.correctBoundaryConditions();
+                baseRc.correctBoundaryConditions();
+                baseK.correctBoundaryConditions();
+                baseCpEff.correctBoundaryConditions();
+                baseFL.correctBoundaryConditions();
+                baseRp.correctBoundaryConditions();
+                baseRm.correctBoundaryConditions();
+                baseRs.correctBoundaryConditions();
+                baseQ.correctBoundaryConditions();
+                baseMeltHistory.correctBoundaryConditions();
             }
             } // end sub-mesh scope (sub-mesh fields destroyed here)
 
